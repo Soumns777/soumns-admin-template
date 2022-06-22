@@ -1,4 +1,4 @@
-## :blue_heart::blue_heart:  Vue3-TS-Vite-Template
+## :blue_heart::blue_heart:  Soumns-Admin-Template
 
 #### :sweat_drops: Init
 
