@@ -1,0 +1,29 @@
+$background-color: #ff6100;
+
+html.dark {
+  .container {
+    background-color: var(--el-fill-color-extra-light) !important;
+    .container-login-content {
+      background-color: var(--el-mask-color) !important;
+      .container-login-content-form {
+        background-color: var(--el-bg-color) !important;
+        box-shadow: var(--geeker-login-shadow-light) !important;
+        .container-text {
+          color: var(--el-text-color-primary) !important;
+        }
+      }
+    }
+  }
+}
+
+.faj {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.yichu {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
