@@ -11,7 +11,7 @@ export interface Result {
  * @desc 请求响应参数(包含data)
  */
 export interface ResultData<T = any> extends Result {
-  data?: T;
+  data: T;
 }
 
 /**
@@ -49,4 +49,8 @@ export interface IPlogin {
   user: ILogin;
   todoList: ITodoList;
   tid: number;
+}
+
+export interface IGenerateRoute {
+  pid: number;
 }

@@ -51,7 +51,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
         if (res.status == '200') {
           ElMessage.success('登录成功!');
-          router.push({ name: 'todoList' });
+          router.push({ name: 'home' });
         }
       } catch (error) {}
     } else {

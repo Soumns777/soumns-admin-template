@@ -1,9 +1,12 @@
 import NProgress from '@/libs/nprogress';
+import { formatTree, generateRoute } from '@/libs/utils/utools';
+import { initMenuList } from '@/services/request';
 import {
   createRouter,
   createWebHistory,
   createWebHashHistory,
   RouteRecordRaw,
+  RouteRecordName,
 } from 'vue-router';
 
 // 创建路由表
@@ -25,8 +28,10 @@ const routes: RouteRecordRaw[] = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(), // 采用HTML5模式,使用 history.pushState API
+  history: createWebHashHistory(), // 采用HTML5模式,使用 history.pushState API
   routes,
+  // 切换页面，滚动到最顶部
+  scrollBehavior: () => ({ left: 0, top: 0 }),
 });
 
 // * 路由拦截 beforeEach
