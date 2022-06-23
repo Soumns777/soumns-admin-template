@@ -38,15 +38,21 @@ export function formatTree(data: Menu.MenuList) {
   return parents;
 }
 
+const modules = import.meta.glob('@/views/*/*.vue');
+
+// console.log(modules, '💙💛 modules');
+
 /**
  * @desc 转换router列表
  */
 export function generateRoute(userRoutes: Menu.MenuList) {
-  let newRoutes = userRoutes.map((r) => {
+  console.log(userRoutes, '💙💛 userRoutes');
+  let newRoutes = userRoutes.map((r, i) => {
     let routes: Menu.IRoutes = {
       path: r.path,
       name: r.name,
-      component: () => import(`@/views/${r.name}/index.vue`),
+      component: () => import(`@/views/${r.name}.vue`),
+      // component: modules[`../views/${routes.component}`],
     };
 
     if (r.children) {

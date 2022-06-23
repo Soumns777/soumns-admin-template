@@ -19,4 +19,4 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 const store = createPinia();
 store.use(createPersistedState());
 
-createApp(App).use(router).use(store).mount('#app');
+createApp(App).use(store).use(router).mount('#app');

@@ -17,4 +17,6 @@ declare namespace Menu {
     component: () => Promise<any>;
     children?: IRoutes[];
   }
+
+  type RoutesList = IRoutes[];
 }

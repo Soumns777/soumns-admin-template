@@ -1,6 +1,4 @@
 import NProgress from '@/libs/nprogress';
-import { formatTree, generateRoute } from '@/libs/utils/utools';
-import { initMenuList } from '@/services/request';
 import {
   createRouter,
   createWebHistory,
@@ -8,6 +6,9 @@ import {
   RouteRecordRaw,
   RouteRecordName,
 } from 'vue-router';
+import useAuth from '@/store/modules/auth';
+
+let Auth: any = null;
 
 // 创建路由表
 const routes: RouteRecordRaw[] = [
@@ -39,6 +40,21 @@ router.beforeEach((to, from, next) => {
   NProgress.start();
   // * 在跳转路由之前，清除所有的请求
   // axiosCanceler.removeAllPending();
+
+  if (Auth == null) {
+    // Auth = useAuth();
+    // const { authBtns, authRoutes } = $(storeToRefs(Auth));
+    // authRoutes.map((item: RouteRecordRaw) => {
+    //   router.addRoute('basic', item);
+    // });
+    // router.addRoute({
+    //   name: 'test',
+    //   path: '/test',
+    //   redirect: { name: 'test' },
+    //   component: () => import('@/views/test/index.vue'),
+    // });
+    // console.log(router.getRoutes(), '💙💛 获取实时的routes');
+  }
 
   // * 判断当前路由是否需要访问权限
   // if (!to.matched.some(record => record.meta.requiresAuth)) return next();
