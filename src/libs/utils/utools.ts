@@ -51,7 +51,7 @@ export function generateRoute(userRoutes: Menu.MenuList) {
     let routes: Menu.IRoutes = {
       path: r.path,
       name: r.name,
-      component: () => import(`@/views/${r.name}.vue`),
+      component: () => import(/* @vite-ignore */ `@/views/${r.name}.vue`),
       // component: modules[`../views/${routes.component}`],
     };
 
