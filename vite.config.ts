@@ -11,6 +11,22 @@ const pathSrc = path.resolve(__dirname, 'src');
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './',
+  publicDir: 'public',
+  build: {
+    target: 'modules',
+    outDir: 'dist/www', //指定输出路径
+    assetsDir: 'assets', // 指定生成静态资源的存放路径
+    minify: 'terser', // 混淆器，terser构建后文件体积更小
+    sourcemap: false, // 构建后是否生成 source map 文件
+    rollupOptions: {
+      output: {
+        chunkFileNames: 'js/[name]-[hash].js',
+        entryFileNames: 'js/[name]-[hash].js',
+        assetFileNames: '[ext]/[name]-[hash].[ext]',
+      },
+    },
+  },
   plugins: [
     vue({
       reactivityTransform: true, // 可以支持 $ref 语法糖
