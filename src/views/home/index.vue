@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { initMenuList } from '@/services/request';
-import { formatTree, generateRoute } from '@/libs/utils/asyncRoutes';
+import { formatTree, generateRoute } from '@/libs/asyncRoutes';
 import useAuth from '@/store/modules/auth';
 import { useRouter } from 'vue-router';
 const router = useRouter();

@@ -10,7 +10,8 @@ import md5 from 'js-md5';
 
 const router = useRouter();
 
-const formSize = $ref('default');
+let loading = $ref(false);
+
 const ruleFormRef = $ref<FormInstance>();
 const ruleForm: ILogin = reactive({
   userName: 'admin',
@@ -39,7 +40,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   await formEl.validate(async (valid, fields) => {
     if (valid) {
       //   ElMessage.success('校验成功!');
-
+      loading = true;
       try {
         const res = await login({
           userName: ruleForm.userName,
@@ -51,13 +52,14 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
         if (res.status == '200') {
           ElMessage.success('登录成功!');
+          formEl.resetFields();
           router.push({ name: 'home' });
         }
       } catch (error) {}
     } else {
       console.log('💙💛 error submit!', fields?.password[0].message);
 
-      //   ElMessage.error(fields?.password[0].message);
+      loading = false;
     }
   });
 };
@@ -120,7 +122,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
           :model="ruleForm"
           :rules="rules"
           class="demo-ruleForm"
-          :size="formSize"
+          size="large"
           status-icon
           w="100%"
         >
@@ -171,6 +173,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
                 size="large"
                 type="primary"
                 w="185px"
+                :loading="loading"
               >
                 登录
               </el-button>

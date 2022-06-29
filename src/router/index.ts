@@ -1,6 +1,6 @@
 import NProgress from '@/libs/nprogress';
 import { initMenuList } from '@/services/request';
-import { formatTree, generateRoute } from '@/libs/utils/asyncRoutes';
+import { formatTree, generateRoute } from '@/libs/asyncRoutes';
 import {
   createRouter,
   createWebHistory,
@@ -27,6 +27,20 @@ const routes: RouteRecordRaw[] = [
     path: '/home',
     name: 'home',
     component: () => import('@/views/home/index.vue'),
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('@/components/errorPages/404.vue'),
+    meta: {
+      title: '404页面',
+      key: '404',
+    },
+  },
+  {
+    // 找不到路由重定向到404页面
+    path: '/:pathMatch(.*)',
+    redirect: { name: '404' },
   },
 ];
 

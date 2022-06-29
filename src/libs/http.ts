@@ -10,6 +10,10 @@ import { LoginRes, ResultData } from './types';
 import { ResultEnum } from '@/enums/httpEnum';
 import { checkStatus } from './helper/checkStatus';
 import { ElMessage } from 'element-plus';
+import {
+  showFullScreenLoading,
+  tryHideFullScreenLoading,
+} from '@/libs/serviceLoading';
 
 // import router from "@/routers";
 
@@ -41,7 +45,7 @@ class RequestHttp {
       (config: AxiosRequestConfig) => {
         // * 将当前请求添加到 pending 中
         axiosCanceler.addPending(config);
-        // showFullScreenLoading();
+        showFullScreenLoading();
         // const token: string = globalStore.token;
         // return { ...config, headers: { 'x-access-token': token } };
         return { ...config };
@@ -60,7 +64,7 @@ class RequestHttp {
         const { data, config } = response;
         // * 在请求结束后，移除本次请求
         axiosCanceler.removePending(config);
-        // tryHideFullScreenLoading();
+        tryHideFullScreenLoading();
         // * 登陆失效（code == 599）
         // if (data.code == ResultEnum.OVERDUE) {
         //   ElMessage.error(data.msg);
@@ -80,7 +84,7 @@ class RequestHttp {
       },
       async (error: AxiosError) => {
         const { response } = error;
-        // tryHideFullScreenLoading();
+        tryHideFullScreenLoading();
         // 根据响应的错误状态码，做不同的处理
         if (response) return checkStatus(response.status);
         // 服务器结果都没有返回(可能服务器错误可能客户端断网)，断网处理:可以跳转到断网页面
