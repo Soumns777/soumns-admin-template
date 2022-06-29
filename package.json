@@ -6,7 +6,8 @@
     "dev": "vite --mode development",
     "dev:test": "vite --mode test",
     "dev:prod": "vite --mode production",
-    "build": "vue-tsc --noEmit --skipLibCheck && vite build",
+    "test": "vite build --mode test",
+    "build": "vite build --mode production",
     "preview": "vite preview",
     "typecheck": "vue-tsc --noEmit"
   },
