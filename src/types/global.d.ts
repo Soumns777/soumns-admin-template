@@ -1,6 +1,7 @@
 // * Menu 菜单列表
 declare namespace Menu {
   interface IMenuOptions {
+    component: undefined;
     id: number;
     pid: number;
     path: string;
@@ -14,9 +15,20 @@ declare namespace Menu {
   interface IRoutes {
     name: string;
     path: string;
-    component: () => Promise<any>;
+    component: string;
     children?: IRoutes[];
   }
 
   type RoutesList = IRoutes[];
+
+  interface IMenu {
+    id: number;
+    name: string;
+    path: string;
+    pid: number;
+    title: string;
+    children?: IMenu[];
+  }
+
+  type Menus = IMenu[];
 }

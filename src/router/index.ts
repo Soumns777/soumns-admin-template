@@ -1,4 +1,6 @@
 import NProgress from '@/libs/nprogress';
+import { initMenuList } from '@/services/request';
+import { formatTree, generateRoute } from '@/libs/utils/asyncRoutes';
 import {
   createRouter,
   createWebHistory,
@@ -36,24 +38,29 @@ const router = createRouter({
 });
 
 // * 路由拦截 beforeEach
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   NProgress.start();
   // * 在跳转路由之前，清除所有的请求
   // axiosCanceler.removeAllPending();
 
   if (Auth == null) {
+    const { data: res } = await initMenuList({
+      pid: 1,
+    });
+
     // Auth = useAuth();
     // const { authBtns, authRoutes } = $(storeToRefs(Auth));
-    // authRoutes.map((item: RouteRecordRaw) => {
-    //   router.addRoute('basic', item);
-    // });
-    // router.addRoute({
-    //   name: 'test',
-    //   path: '/test',
-    //   redirect: { name: 'test' },
-    //   component: () => import('@/views/test/index.vue'),
-    // });
-    // console.log(router.getRoutes(), '💙💛 获取实时的routes');
+    generateRoute(formatTree(res)).map((item) => {
+      const views = import.meta.glob('../views/**/*.vue');
+
+      router.addRoute('basic', {
+        name: item.name,
+        path: item.path,
+        component: views[`../${item.component}`],
+      });
+    });
+
+    console.log(router.getRoutes(), '💙💛 获取实时的routes');
   }
 
   // * 判断当前路由是否需要访问权限

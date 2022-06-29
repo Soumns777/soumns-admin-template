@@ -38,21 +38,15 @@ export function formatTree(data: Menu.MenuList) {
   return parents;
 }
 
-const modules = import.meta.glob('@/views/*/*.vue');
-
-// console.log(modules, '💙💛 modules');
-
 /**
- * @desc 转换router列表
+ * @desc 转换成router基础路由列表
  */
 export function generateRoute(userRoutes: Menu.MenuList) {
-  console.log(userRoutes, '💙💛 userRoutes');
   let newRoutes = userRoutes.map((r, i) => {
     let routes: Menu.IRoutes = {
       path: r.path,
       name: r.name,
-      component: () => import(/* @vite-ignore */ `@/views/${r.name}.vue`),
-      // component: modules[`../views/${routes.component}`],
+      component: `views/${r.name}/index.vue`,
     };
 
     if (r.children) {
@@ -66,34 +60,5 @@ export function generateRoute(userRoutes: Menu.MenuList) {
 }
 
 /**
- * @description 对象数组深克隆
- * @param obj 源对象
- * @returns {obj} 克隆后的对象
+ * @desc 递归动态添加路由
  */
-export function deepCopy<T>(obj: any): T {
-  let newObj: any;
-  try {
-    newObj = obj.push ? [] : {};
-  } catch (error) {
-    newObj = {};
-  }
-  for (let attr in obj) {
-    if (typeof obj[attr] === 'object') {
-      newObj[attr] = deepCopy(obj[attr]);
-    } else {
-      newObj[attr] = obj[attr];
-    }
-  }
-  return newObj;
-}
-
-/**
- * @description 生成随机数
- * @param min 最小值
- * @param max 最大值
- * @returns {number}
- */
-export function randomNum(min: number, max: number): number {
-  let num = Math.floor(Math.random() * (min - max) + max);
-  return num;
-}

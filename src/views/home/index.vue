@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { initMenuList } from '@/services/request';
-import { formatTree, generateRoute } from '@/libs/utils/utools';
+import { formatTree, generateRoute } from '@/libs/utils/asyncRoutes';
 import useAuth from '@/store/modules/auth';
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -29,7 +29,7 @@ const { authBtns, authRoutes } = storeToRefs(Auth);
   <div>
     home
 
-    <button @click="router.push({ name: 'test' })">theme</button>
+    <button @click="router.push({ name: 'theme' })">theme</button>
   </div>
 </template>
 

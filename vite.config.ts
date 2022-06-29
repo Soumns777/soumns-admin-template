@@ -21,6 +21,16 @@ export default defineConfig({
     sourcemap: false, // 构建后是否生成 source map 文件
     rollupOptions: {
       output: {
+        // 切割过大的包
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return id
+              .toString()
+              .split('node_modules/')[1]
+              .split('/')[0]
+              .toString();
+          }
+        },
         chunkFileNames: 'js/[name]-[hash].js',
         entryFileNames: 'js/[name]-[hash].js',
         assetFileNames: '[ext]/[name]-[hash].[ext]',
