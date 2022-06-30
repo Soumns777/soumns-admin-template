@@ -65,9 +65,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 
           ElMessage.success('登录成功!');
           formEl.resetFields();
-          router.push({ name: 'home' });
+          router.push({ name: 'layout' });
         }
-      } catch (error) {}
+      } catch (error) {
+        loading = false;
+      }
     } else {
       console.log('💙💛 error submit!', fields?.password[0].message);
 

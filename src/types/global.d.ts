@@ -12,6 +12,7 @@ declare namespace Menu {
   type MenuList = IMenuOptions[];
 
   interface IRoutes {
+    redirect?: string;
     name: string;
     path: string;
     component: string;

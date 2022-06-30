@@ -12,7 +12,10 @@
     <div flex flex-col>
       <h2 m="b30px" text-60px font-bold color="#434e59">404</h2>
       <h4 m="b20px" text-19px color="#848587">抱歉，您访问的页面不存在~🤷‍♂️🤷‍♀️</h4>
-      <el-button w="100px" type="primary" @click="router.push({ name: 'home' })"
+      <el-button
+        w="100px"
+        type="primary"
+        @click="router.push({ name: 'layout' })"
         >返回首页</el-button
       >
     </div>

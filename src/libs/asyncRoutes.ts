@@ -1,4 +1,3 @@
-import store from '@/store/index';
 import { Store } from 'pinia';
 
 /**
@@ -54,6 +53,7 @@ export function generateRoute(userRoutes: Menu.MenuList) {
 
     if (r.children) {
       routes.children = generateRoute(r.children);
+      routes.redirect = routes.children[0].path;
     }
 
     return routes;
@@ -82,6 +82,7 @@ export function recursiveRoutes(
     if (tempNode.component) {
       tempNode.component = views[`../${tempNode.component}`];
     }
+
     if (tempNode.children && tempNode.children.length > 0) {
       recursiveRoutes(tempNode.children, views);
     }
@@ -108,7 +109,7 @@ export function addDynamicRoutes(
     const views = import.meta.glob('../views/**/*.vue');
     recursiveRoutes(routesData, views);
     routesData.forEach((item: any) => {
-      router.addRoute(item);
+      router.addRoute('layout', item);
     });
   }
   // 404页面
