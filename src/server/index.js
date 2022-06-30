@@ -55,6 +55,43 @@ app.get('/api/login', (req, res) => {
     msg: '登录成功',
     data: {
       access_token: md5(str),
+      routeList: [
+        {
+          id: 1,
+          pid: 0,
+          name: 'home1',
+          path: '/home1',
+          title: '首页',
+        },
+        {
+          id: 2,
+          pid: 1,
+          name: 'login1',
+          path: '/home1/login',
+          title: '首页-登录',
+        },
+        {
+          id: 3,
+          pid: 0,
+          name: 'table',
+          title: '表格',
+          path: '/table',
+        },
+        {
+          id: 4,
+          pid: 3,
+          name: 'excel',
+          title: '表格-Excel',
+          path: '/table/excel',
+        },
+        {
+          id: 5,
+          pid: 0,
+          name: 'theme',
+          title: '主题',
+          path: '/theme',
+        },
+      ],
     },
   });
 });

@@ -2,14 +2,20 @@
 import type { FormInstance, FormRules } from 'element-plus';
 import SwitchDark from '@/components/switchDark/index.vue';
 import { User, Lock, CircleClose, UserFilled } from '@element-plus/icons-vue';
-
 import { ElMessage } from 'element-plus';
 import { login } from '@/services/request';
 import { ILogin } from '@/libs/types';
 import md5 from 'js-md5';
+import {
+  formatTree,
+  generateRoute,
+  addDynamicRoutes,
+} from '@/libs/asyncRoutes';
+
+import store from '@/store/index';
+const authStore = store().Auth;
 
 const router = useRouter();
-
 let loading = $ref(false);
 
 const ruleFormRef = $ref<FormInstance>();
@@ -47,10 +53,16 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           password: md5(ruleForm.password),
         });
 
-        // get access_token
-        console.log(res.data?.access_token, '💙💛 access_token');
-
         if (res.status == '200') {
+          authStore.setAuthToken(res.data.access_token);
+          authStore.setAuthRoutes(
+            generateRoute(formatTree(res.data.routeList))
+          );
+          addDynamicRoutes(authStore, router);
+
+          console.log(authStore, '💙💛 authStore');
+          console.log(router.getRoutes(), '💙💛 getRoutes');
+
           ElMessage.success('登录成功!');
           formEl.resetFields();
           router.push({ name: 'home' });
@@ -143,6 +155,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
               v-model="ruleForm.password"
               placeholder="密码:123"
               size="large"
+              type="password"
             >
               <template #prefix>
                 <el-icon><Lock /></el-icon>

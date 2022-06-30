@@ -1,7 +1,6 @@
 // * Menu 菜单列表
 declare namespace Menu {
   interface IMenuOptions {
-    component: undefined;
     id: number;
     pid: number;
     path: string;

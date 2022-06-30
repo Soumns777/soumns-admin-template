@@ -1,3 +1,6 @@
+import store from '@/store/index';
+import { Store } from 'pinia';
+
 /**
  * 使用递归处理路由菜单
  * @param newArr 所有菜单数组
@@ -60,5 +63,96 @@ export function generateRoute(userRoutes: Menu.MenuList) {
 }
 
 /**
- * @desc 递归动态添加路由
+ * @desc 递归遍历路由数据
  */
+export function recursiveRoutes(
+  tree: any[],
+  views: Record<
+    string,
+    () => Promise<{
+      [key: string]: /**
+       * 转换树形结构-递归
+       */
+      any;
+    }>
+  >
+) {
+  return tree.map((node) => {
+    const tempNode = node;
+    if (tempNode.component) {
+      tempNode.component = views[`../${tempNode.component}`];
+    }
+    if (tempNode.children && tempNode.children.length > 0) {
+      recursiveRoutes(tempNode.children, views);
+    }
+    return tempNode;
+  });
+}
+
+/**
+ * @desc 添加动态路由
+ */
+export function addDynamicRoutes(
+  userStore: { authRoutes: string | any[] },
+  router: {
+    addRoute: (arg0: {
+      path: string;
+      name: string;
+      component: () => Promise<typeof import('*.vue')>;
+      meta: { title: string; layout: boolean };
+    }) => void;
+  }
+) {
+  if (userStore.authRoutes && userStore.authRoutes.length > 0) {
+    const routesData = JSON.parse(JSON.stringify(userStore.authRoutes));
+    const views = import.meta.glob('../views/**/*.vue');
+    recursiveRoutes(routesData, views);
+    routesData.forEach((item: any) => {
+      router.addRoute(item);
+    });
+  }
+  // 404页面
+  router.addRoute({
+    path: '/:pathMatch(.*)',
+    name: '404',
+    component: () => import('@/components/errorPages/404.vue'),
+    meta: {
+      title: '无法找到该页面',
+      layout: false,
+    },
+  });
+}
+
+// 清除动态路由
+export function clearDynamicRoutes(
+  userStore: Store<
+    'Auth',
+    {
+      /**
+       * 使用递归处理路由菜单
+       * @param newArr 所有菜单数组
+       */
+      /**
+       * 转换树形结构-递归
+       */
+      authToken: string;
+      authBtns: {};
+      authRoutes: Menu.RoutesList;
+    },
+    {},
+    {
+      setAuthToken(authToken: string): void;
+      setAuthRoutes(authRoutes: Menu.RoutesList): void;
+      clearAuthToken(): void;
+      clearAuthRoutes(): void;
+    }
+  >,
+  router: { removeRoute: (arg0: any) => void }
+) {
+  if (userStore.authRoutes && userStore.authRoutes.length > 0) {
+    userStore.authRoutes.forEach((item: any) => {
+      router.removeRoute(item.name);
+    });
+    userStore.clearAuthRoutes();
+  }
+}

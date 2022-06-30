@@ -1,28 +1,9 @@
 <script lang="ts" setup>
 import { initMenuList } from '@/services/request';
 import { formatTree, generateRoute } from '@/libs/asyncRoutes';
-import useAuth from '@/store/modules/auth';
+import store from '@/store/index';
 import { useRouter } from 'vue-router';
 const router = useRouter();
-
-const Auth = useAuth();
-
-const init = async () => {
-  const { data: res } = await initMenuList({
-    pid: 1,
-  });
-
-  Auth.setAuthRoutes(generateRoute(formatTree(res)));
-
-  console.log(generateRoute(formatTree(res)), '💙💛 generateRoute');
-};
-
-onMounted(() => {
-  init();
-});
-
-const { authBtns, authRoutes } = storeToRefs(Auth);
-// console.log(authRoutes, '💙💛 用户路由权限');
 </script>
 
 <template>

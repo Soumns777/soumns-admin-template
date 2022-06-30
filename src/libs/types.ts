@@ -23,6 +23,7 @@ export interface ILogin {
 }
 
 export interface LoginRes {
+  routeList: Menu.Menus;
   access_token: string;
 }
 
