@@ -1,7 +1,7 @@
 <script lang="ts" setup></script>
 
 <template>
-  <div class="container">login2</div>
+  <div class="container">excel</div>
 </template>
 
 <style scoped lang="scss"></style>

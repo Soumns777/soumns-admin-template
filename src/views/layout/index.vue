@@ -9,9 +9,13 @@ import {
 } from '@element-plus/icons-vue';
 
 import store from '@/store/index';
-import { useRouter } from 'vue-router';
+import { ReactiveVariable } from 'vue/macros';
+import { RouteLocationMatched } from 'vue-router';
+
 const authStore = store().Auth;
 const router = useRouter();
+const route = useRoute();
+console.log(route, '💙💛 route');
 
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log(key, keyPath, '💙💛 选中项');
@@ -23,6 +27,23 @@ const handleClose = (key: string, keyPath: string[]) => {
 const changePages = (event: any) => {
   console.log(event, '💙💛');
 };
+
+const activeMenu = $computed((): string => route.path);
+let breadcrumbList: RouteLocationMatched[] = $ref([]);
+
+const caleBreadcrumb = () => {
+  breadcrumbList = route.matched.filter((item) => item.meta && item.meta.title);
+};
+
+watch(
+  route,
+  () => {
+    caleBreadcrumb();
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <template>
@@ -50,38 +71,71 @@ const changePages = (event: any) => {
           text-color="#fff"
           active-text-color="#ff6100"
           :style="{ borderRight: '0' }"
-          v-for="(item, idx) in authStore.authRoutes"
-          :key="idx"
           router
           unique-opened
+          :default-active="activeMenu"
         >
-          <el-sub-menu :index="item.path">
-            <template #title>
-              <el-icon><location /></el-icon>
-              <span>{{ item.name }}</span>
-            </template>
-            <el-menu-item
-              :index="it1.path"
-              v-for="(it1, idx1) in item.children"
-              :key="idx1"
-              @click="changePages"
+          <template
+            v-for="(item, idx) in authStore.authRoutes"
+            :key="item.path"
+          >
+            <el-sub-menu
+              v-if="item.children && item.children.length > 0"
+              :index="item.path"
             >
               <template #title>
                 <el-icon><location /></el-icon>
+                <span>{{ item.name }}</span>
               </template>
-              {{ it1.name }}</el-menu-item
-            >
-          </el-sub-menu>
+              <el-menu-item
+                :index="it1.path"
+                v-for="(it1, idx1) in item.children"
+                :key="idx1"
+                @click="changePages"
+              >
+                <template #title>
+                  <el-icon><location /></el-icon>
+                </template>
+                {{ it1.name }}</el-menu-item
+              >
+            </el-sub-menu>
+
+            <el-menu-item v-else :index="item.path">
+              <template #title>
+                <el-icon><location /></el-icon>
+                <span>{{ item.name }}</span>
+              </template>
+            </el-menu-item>
+          </template>
         </el-menu>
       </el-aside>
+
       <el-container>
         <el-header h="60px" bg="#fff">Header</el-header>
-        <el-main
-          class="min-h-[calc(100vh-60px)]"
-          bg="#efefef
-"
+
+        <el-breadcrumb
+          separator="/"
+          h="40px"
+          bg="#efefef"
+          flex
+          items-center
+          p="l20px"
+          mode="out-in"
         >
-          <router-view />
+          <el-breadcrumb-item :to="{ path: '/home' }" key="/home"
+            >首页</el-breadcrumb-item
+          >
+
+          <el-breadcrumb-item
+            v-for="item in breadcrumbList"
+            :key="item.path"
+            :to="{ path: item.path }"
+            >{{ item.name }}</el-breadcrumb-item
+          >
+        </el-breadcrumb>
+
+        <el-main class="min-h-[calc(100vh-60px)]" bg="#edeff2">
+          <router-view bg="#fff" w="100%" h="100%" />
         </el-main>
       </el-container>
     </el-container>

@@ -1,4 +1,5 @@
 import { Store } from 'pinia';
+import { Router } from 'vue-router';
 
 /**
  * 使用递归处理路由菜单
@@ -49,6 +50,9 @@ export function generateRoute(userRoutes: Menu.MenuList) {
       path: r.path,
       name: r.name,
       component: `views/${r.name}/index.vue`,
+      meta: {
+        title: r.title,
+      },
     };
 
     if (r.children) {
@@ -95,17 +99,11 @@ export function recursiveRoutes(
  */
 export function addDynamicRoutes(
   userStore: { authRoutes: string | any[] },
-  router: {
-    addRoute: (arg0: {
-      path: string;
-      name: string;
-      component: () => Promise<typeof import('*.vue')>;
-      meta: { title: string; layout: boolean };
-    }) => void;
-  }
+  router: Router
 ) {
   if (userStore.authRoutes && userStore.authRoutes.length > 0) {
     const routesData = JSON.parse(JSON.stringify(userStore.authRoutes));
+
     const views = import.meta.glob('../views/**/*.vue');
     recursiveRoutes(routesData, views);
     routesData.forEach((item: any) => {

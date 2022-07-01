@@ -11,11 +11,17 @@ declare namespace Menu {
 
   type MenuList = IMenuOptions[];
 
+  interface IMeta {
+    title: string;
+    requireAuth?: boolean;
+  }
+
   interface IRoutes {
     redirect?: string;
     name: string;
     path: string;
     component: string;
+    meta: IMeta;
     children?: IRoutes[];
   }
 

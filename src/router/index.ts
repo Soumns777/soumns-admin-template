@@ -1,6 +1,6 @@
 import { AxiosCanceler } from './../libs/helper/axiosCancel';
 import NProgress from '@/libs/nprogress';
-import { initMenuList } from '@/services/request';
+
 import {
   formatTree,
   generateRoute,
@@ -14,8 +14,9 @@ import {
   RouteRecordRaw,
   RouteRecordName,
 } from 'vue-router';
-import store from '@/store/index';
+
 import { ElMessage } from 'element-plus';
+import store from '@/store/index';
 
 // 创建路由表
 const routes: RouteRecordRaw[] = [
@@ -32,6 +33,7 @@ const routes: RouteRecordRaw[] = [
     path: '/layout',
     name: 'layout',
     component: () => import('@/views/layout/index.vue'),
+    redirect: '/test',
   },
 ];
 
