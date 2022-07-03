@@ -68,6 +68,7 @@ app.get('/api/login', (req, res) => {
           pid: 0,
           name: 'test',
           path: '/test',
+          title: '测试',
         },
         {
           id: 3,
