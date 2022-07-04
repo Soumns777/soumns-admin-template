@@ -1,6 +1,7 @@
 // * Menu 菜单列表
 declare namespace Menu {
   interface IMenuOptions {
+    icon?: string;
     id: number;
     pid: number;
     path: string;
@@ -13,6 +14,7 @@ declare namespace Menu {
 
   interface IMeta {
     title: string;
+    icon?: string;
     requireAuth?: boolean;
   }
 
@@ -45,6 +47,7 @@ declare namespace Tabs {
     path: string;
     title: string;
     close: boolean;
+    icon?: string;
   }
 
   type Tabs = ITab[];

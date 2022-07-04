@@ -62,6 +62,7 @@ app.get('/api/login', (req, res) => {
           name: 'home',
           path: '/home',
           title: '首页',
+          icon: 'home-filled',
         },
         {
           id: 2,
@@ -69,6 +70,7 @@ app.get('/api/login', (req, res) => {
           name: 'test',
           path: '/test',
           title: '测试',
+          icon: 'goblet-square-full',
         },
         {
           id: 3,
@@ -76,6 +78,7 @@ app.get('/api/login', (req, res) => {
           name: 'test1',
           path: '/test1',
           title: '测试1',
+          icon: 'moon-night',
         },
         {
           id: 4,
@@ -83,6 +86,7 @@ app.get('/api/login', (req, res) => {
           name: 'test2',
           path: '/test2',
           title: '测试2',
+          icon: 'open',
         },
         {
           id: 5,
@@ -90,12 +94,14 @@ app.get('/api/login', (req, res) => {
           name: 'test3',
           path: '/test3',
           title: '测试3',
+          icon: 'operation',
         },
         {
           id: 6,
           pid: 0,
           name: 'table',
           path: '/table',
+          icon: 'pear',
         },
         {
           id: 7,
@@ -103,6 +109,7 @@ app.get('/api/login', (req, res) => {
           name: 'excel',
           title: '表格-Excel',
           path: '/excel',
+          icon: 'orange',
         },
         {
           id: 8,
@@ -110,6 +117,7 @@ app.get('/api/login', (req, res) => {
           name: 'theme',
           title: '主题',
           path: '/theme',
+          icon: 'ice-cream-round',
         },
       ],
     },

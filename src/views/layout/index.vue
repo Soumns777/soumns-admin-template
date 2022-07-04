@@ -1,14 +1,7 @@
 <script lang="ts" setup>
-import {
-  Document,
-  Menu as IconMenu,
-  Location,
-  Setting,
-} from '@element-plus/icons-vue';
-
 import store from '@/store/index';
 
-import { RouteLocationMatched } from 'vue-router';
+import { RouteLocationMatched, RouteRecordName } from 'vue-router';
 import { TabsPaneContext } from 'element-plus/lib/tokens/tabs';
 
 const authStore = store().Auth;
@@ -29,44 +22,41 @@ const changePages = (event: any) => {
 };
 
 const activeMenu = $computed((): string => route.path);
-let breadcrumbList: RouteLocationMatched[] = $ref([]);
 
-const caleBreadcrumb = () => {
-  breadcrumbList = route.matched.filter((item) => item.meta && item.meta.title);
-};
-
-watch(
-  route,
-  () => {
-    caleBreadcrumb();
-  },
-  {
-    immediate: true,
-  }
-);
+const breadcrumbList: RouteLocationMatched[] = $computed(() => {
+  return route.matched.filter((item) => item.meta && item.meta.title);
+});
 
 const tabClick = (tabItem: TabsPaneContext) => {
   console.log(tabItem, '💙💛 tabs items');
+
+  router.push({
+    name: tabItem.props.name as RouteRecordName,
+  });
 };
 
 const removeTab = (activeTabPath: any) => {
   console.log(activeTabPath, '💙💛  activeTabPath');
+
+  tabStore.removeTabs(activeTabPath);
 };
 
-tabStore.setTabList([
-  {
-    name: 'home',
-    path: '/home',
-    title: '首页',
-    close: false,
-  },
-  {
-    name: 'test',
-    path: '/test',
-    title: '测试',
-    close: true,
-  },
-]);
+watch(
+  () => route.path,
+  () => {
+    console.log(route, '💙💛 route');
+
+    const tab: Tabs.ITab = {
+      name: route.name as string,
+      path: route.path,
+      title: route.meta.title as string,
+      close: true,
+      icon: route.meta.icon as string,
+    };
+
+    tabStore.addTabs(tab);
+  }
+);
 </script>
 
 <template>
@@ -92,7 +82,7 @@ tabStore.setTabList([
           @close="handleClose"
           background-color="black"
           text-color="#fff"
-          active-text-color="#ff6100"
+          active-text-color="#87CEFA"
           :style="{ borderRight: '0' }"
           router
           unique-opened
@@ -162,21 +152,37 @@ tabStore.setTabList([
               class="demo-tabs"
               @tab-click="tabClick"
               @tab-remove="removeTab"
-              closable
             >
               <el-tab-pane
                 v-for="item in tabStore.tabList"
                 :key="item.name"
                 :label="item.title"
                 :name="item.name"
+                :closable="item.close"
+                :path="item.path"
               >
                 <template #label>
-                  <!-- <el-icon class="tabs-icon" v-if="item.icon">
-							<component :is="item.icon"></component>
-						</el-icon> -->
+                  <el-icon class="tabs-icon" v-if="item.icon">
+                    <component :is="item.icon"></component>
+                  </el-icon>
                   {{ item.title }}
                 </template>
               </el-tab-pane>
+
+              <button @click="tabStore.removeAllTabs()">清空</button>
+              <button
+                @click="
+                  tabStore.addTabs({
+                    name: 'home',
+                    path: '/home',
+                    title: '首页',
+                    close: false,
+                    icon: 'home-filled',
+                  })
+                "
+              >
+                初始化
+              </button>
             </el-tabs>
           </div>
         </el-header>

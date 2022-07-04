@@ -9,7 +9,7 @@ const toggleDark = useToggle(isDark);
 <template>
   <el-switch
     v-model="isDark"
-    @change="toggleDark"
+    @change="toggleDark()"
     inline-prompt
     active-color="#0a0a0a"
     inactive-color="#dcdfe6"

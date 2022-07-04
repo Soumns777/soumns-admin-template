@@ -5,11 +5,13 @@ import App from './App.vue';
 import 'uno.css';
 import router from '@/router/index';
 
-import * as ElementPlusIconsVue from '@element-plus/icons-vue';
+import * as Icons from '@element-plus/icons-vue';
 const app = createApp(App);
-for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-  app.component(key, component);
-}
+
+// 注册element Icons组件
+Object.keys(Icons).forEach((key) => {
+  app.component(key, Icons[key as keyof typeof Icons]);
+});
 
 // 引入vconsole
 // import VConsole from 'vconsole';
@@ -19,4 +21,4 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 const store = createPinia();
 store.use(createPersistedState());
 
-createApp(App).use(store).use(router).mount('#app');
+app.use(store).use(router).mount('#app');

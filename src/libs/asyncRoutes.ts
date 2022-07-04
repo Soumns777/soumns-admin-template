@@ -52,6 +52,7 @@ export function generateRoute(userRoutes: Menu.MenuList) {
       component: `views/${r.name}/index.vue`,
       meta: {
         title: r.title,
+        icon: r.icon,
       },
     };
 
@@ -127,13 +128,6 @@ export function clearDynamicRoutes(
   userStore: Store<
     'Auth',
     {
-      /**
-       * 使用递归处理路由菜单
-       * @param newArr 所有菜单数组
-       */
-      /**
-       * 转换树形结构-递归
-       */
       authToken: string;
       authBtns: {};
       authRoutes: Menu.RoutesList;
