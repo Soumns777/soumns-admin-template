@@ -1,28 +1,19 @@
 const useTabs = defineStore('Tabs', {
   state: () => {
     return {
-      activeTab: 'layout',
-      tabList: [
-        {
-          name: 'layout',
-          path: '/layout',
-          title: '布局',
-        },
-        {
-          name: 'home',
-          path: '/home',
-          title: '首页',
-        },
-        {
-          name: 'test',
-          path: '/test',
-          title: '测试',
-        },
-      ],
+      activeTabName: '/home',
+      tabList: [] as Tabs.Tabs,
     };
   },
 
-  actions: {},
+  actions: {
+    setActiveTabName(activeTabName: string) {
+      this.activeTabName = activeTabName;
+    },
+    setTabList(tabList: Tabs.Tabs) {
+      this.tabList = tabList;
+    },
+  },
 });
 
 export default useTabs;

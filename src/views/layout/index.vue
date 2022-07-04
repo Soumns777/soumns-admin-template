@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { initMenuList } from '@/services/request';
-import { formatTree, generateRoute } from '@/libs/asyncRoutes';
 import {
   Document,
   Menu as IconMenu,
@@ -9,7 +7,7 @@ import {
 } from '@element-plus/icons-vue';
 
 import store from '@/store/index';
-import { ReactiveVariable } from 'vue/macros';
+
 import { RouteLocationMatched } from 'vue-router';
 import { TabsPaneContext } from 'element-plus/lib/tokens/tabs';
 
@@ -54,6 +52,21 @@ const tabClick = (tabItem: TabsPaneContext) => {
 const removeTab = (activeTabPath: any) => {
   console.log(activeTabPath, '💙💛  activeTabPath');
 };
+
+tabStore.setTabList([
+  {
+    name: 'home',
+    path: '/home',
+    title: '首页',
+    close: false,
+  },
+  {
+    name: 'test',
+    path: '/test',
+    title: '测试',
+    close: true,
+  },
+]);
 </script>
 
 <template>
@@ -121,7 +134,7 @@ const removeTab = (activeTabPath: any) => {
       </el-aside>
 
       <el-container>
-        <el-header h="60px" bg="#fff">
+        <el-header bg="#fff">
           <el-breadcrumb
             separator="/"
             flex
@@ -142,24 +155,30 @@ const removeTab = (activeTabPath: any) => {
             >
           </el-breadcrumb>
 
-          <el-tabs
-            v-model="tabStore.activeTab"
-            type="card"
-            class="demo-tabs"
-            @tab-click="tabClick"
-            @tab-remove="removeTab"
-            closable
-          >
-            <el-tab-pane
-              v-for="item in tabStore.tabList"
-              :key="item.name"
-              :label="item.name"
-              :name="item.name"
-              :title="item.title"
+          <div class="tabs-menu">
+            <el-tabs
+              v-model="tabStore.activeTabName"
+              type="card"
+              class="demo-tabs"
+              @tab-click="tabClick"
+              @tab-remove="removeTab"
+              closable
             >
-              {{ item.title }}
-            </el-tab-pane>
-          </el-tabs>
+              <el-tab-pane
+                v-for="item in tabStore.tabList"
+                :key="item.name"
+                :label="item.title"
+                :name="item.name"
+              >
+                <template #label>
+                  <!-- <el-icon class="tabs-icon" v-if="item.icon">
+							<component :is="item.icon"></component>
+						</el-icon> -->
+                  {{ item.title }}
+                </template>
+              </el-tab-pane>
+            </el-tabs>
+          </div>
         </el-header>
 
         <!-- class="min-h-[calc(100vh-60px)]" -->
@@ -171,11 +190,46 @@ const removeTab = (activeTabPath: any) => {
   </div>
 </template>
 
-<style lang="scss">
-.demo-tabs > .el-tabs__content {
-  padding: 32px;
-  color: #6b778c;
-  font-size: 32px;
-  font-weight: 600;
+<style lang="scss" scoped>
+:deep(.el-header) {
+  --el-header-height: 90px;
+}
+
+:deep(.tabs-menu) {
+  position: relative;
+  width: 100%;
+  .el-dropdown {
+    position: absolute;
+    top: 8px;
+    right: 13px;
+  }
+  .tabs-icon {
+    top: 2px;
+  }
+  .el-tabs__nav-wrap {
+    position: absolute;
+    width: calc(100% - 120px);
+  }
+  .el-tabs--card > .el-tabs__header {
+    height: 40px;
+    padding: 0 10px;
+    margin: 0;
+    box-sizing: border-box;
+    border-bottom: none;
+  }
+  .el-tabs--card > .el-tabs__header .el-tabs__nav {
+    border: none;
+  }
+  .el-tabs--card > .el-tabs__header .el-tabs__item {
+    color: #cccccc;
+    border: none;
+  }
+  .el-tabs--card > .el-tabs__header .el-tabs__item.is-active {
+    color: $primary-color;
+    border-bottom: 2px solid $primary-color;
+  }
+  .el-tabs__item .is-icon-close svg {
+    margin-top: 0.5px;
+  }
 }
 </style>

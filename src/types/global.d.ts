@@ -38,3 +38,14 @@ declare namespace Menu {
 
   type Menus = IMenu[];
 }
+
+declare namespace Tabs {
+  interface ITab {
+    name: string;
+    path: string;
+    title: string;
+    close: boolean;
+  }
+
+  type Tabs = ITab[];
+}
