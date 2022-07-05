@@ -1,13 +1,34 @@
 <script lang="ts" setup>
-import { BgColor, BgColorKey } from '@/types/dataScreen';
+import type { Ref } from 'vue';
+import { bgColorKey, IBgcolor } from '@/types/provideKey';
+import Father from './father.vue';
 
-// 使用 as 类型解决undefined
-const { color, setColor } = inject(BgColorKey) as BgColor;
-console.log(color, setColor, '💚 provide inject');
+let bgColor = $ref('#ff6100');
+
+const setBgColor = (color: string): void => {
+  bgColor = color;
+};
+provide(bgColorKey, {
+  bgColor: $$(bgColor),
+  setBgColor,
+});
+
+watch(
+  () => bgColor,
+  () => {
+    console.log(bgColor, '💛💙 bgColor');
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
-  <div>数据大屏</div>
+  <div class="box" w="100%" h="20px">数据大屏</div>
+  <Father v-model="bgColor" />
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.box {
+  background-color: v-bind(bgColor);
+}
+</style>

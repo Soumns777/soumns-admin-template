@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import store from '@/store/index';
 import { ArrowRight } from '@element-plus/icons-vue';
-import { InjectionKey } from 'vue';
+import { InjectionKey, Ref } from 'vue';
 import {
   RouteLocationMatched,
   RouteLocationRaw,
   RouteRecordName,
 } from 'vue-router';
 import { TabsPaneContext } from 'element-plus/lib/tokens/tabs';
-import { BgColorKey } from '@/types/dataScreen';
+import { bgColorKey } from '@/types/provideKey';
 
 const authStore = store().Auth;
 const tabStore = store().Tabs;
@@ -46,18 +46,6 @@ watch(
 const removeTab = (activeTabPath: any) => {
   tabStore.removeTabs(activeTabPath);
 };
-
-// 测试provide、inject
-const colorRef = ref('#ff6100');
-
-const setColor = (color: string): void => {
-  colorRef.value = color;
-};
-
-provide(BgColorKey, {
-  color: colorRef,
-  setColor,
-});
 </script>
 
 <template>
