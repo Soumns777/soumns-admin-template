@@ -1,8 +1,9 @@
+import { TABS_BLACK_LIST } from '@/config/config';
 import router from '@/router/index';
 const useTabs = defineStore('Tabs', {
   state: () => {
     return {
-      activeTabName: 'home',
+      activeTabPath: 'home',
       tabList: [
         {
           name: 'home',
@@ -16,38 +17,36 @@ const useTabs = defineStore('Tabs', {
   },
 
   actions: {
-    setActiveTabName(activeTabName: string) {
-      this.activeTabName = activeTabName;
+    setActiveTabName(activeTabPath: string) {
+      this.activeTabPath = activeTabPath;
     },
     addTabs(tab: Tabs.ITab) {
+      if (TABS_BLACK_LIST.includes(tab.path)) return;
       if (this.tabList.every((item) => item.path !== tab.path)) {
         this.tabList.push(tab);
       }
-
-      this.setActiveTabName(tab.name);
+      this.setActiveTabName(tab.path);
     },
 
     removeTabs(tabPath: string) {
-      let activeTabName = this.activeTabName;
-      const tabList = this.tabList;
-      if (activeTabName === tabPath) {
-        tabList.forEach((item, index) => {
-          if (item.name !== tabPath) return;
-          const nextTab = tabList[index + 1] || tabList[index - 1];
-          if (!nextTab) return;
-          activeTabName = nextTab.name;
-          router.push({
-            name: nextTab.name,
-          });
+      const tabList = JSON.parse(JSON.stringify(this.tabList));
+      let activeTabPath = this.activeTabPath;
+
+      if (tabPath === activeTabPath) {
+        tabList.forEach((item: any, idx: number) => {
+          // 优选后面的一项作为命中项
+          const nextTab = tabList[idx + 1] || tabList[idx - 1];
+          router.push(nextTab.path);
         });
       }
-      this.activeTabName = activeTabName;
-      this.tabList = tabList.filter((item) => item.name !== tabPath);
+      this.tabList = tabList.filter(
+        (item: { path: string }) => item.path !== tabPath
+      );
     },
 
     removeAllTabs() {
       this.tabList = [];
-      this.activeTabName = '/home';
+      this.activeTabPath = 'home';
     },
   },
 });

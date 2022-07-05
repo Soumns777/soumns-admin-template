@@ -1,12 +1,8 @@
+import { HOME_URL } from './../config/config';
 import { AxiosCanceler } from './../libs/helper/axiosCancel';
 import NProgress from '@/libs/nprogress';
 
-import {
-  formatTree,
-  generateRoute,
-  clearDynamicRoutes,
-  addDynamicRoutes,
-} from '@/libs/asyncRoutes';
+import { clearDynamicRoutes, addDynamicRoutes } from '@/libs/asyncRoutes';
 import {
   createRouter,
   createWebHistory,
@@ -29,11 +25,18 @@ const routes: RouteRecordRaw[] = [
     name: 'login',
     component: () => import('@/views/login/index.vue'),
   },
+
   {
     path: '/layout',
     name: 'layout',
     component: () => import('@/views/layout/index.vue'),
-    redirect: '/test',
+    redirect: HOME_URL,
+  },
+
+  {
+    path: '/dataScreen',
+    name: 'dataScreen',
+    component: () => import('@/views/dataScreen/index.vue'),
   },
 ];
 

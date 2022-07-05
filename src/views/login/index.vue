@@ -60,7 +60,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           );
           addDynamicRoutes(authStore, router);
 
-          console.log(authStore, '💙💛 authStore');
           console.log(router.getRoutes(), '💙💛 getRoutes');
 
           ElMessage.success('登录成功!');

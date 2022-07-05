@@ -108,7 +108,11 @@ export function addDynamicRoutes(
     const views = import.meta.glob('../views/**/*.vue');
     recursiveRoutes(routesData, views);
     routesData.forEach((item: any) => {
-      router.addRoute('layout', item);
+      if (item.name == 'dataScreen') {
+        router.addRoute(item);
+      } else {
+        router.addRoute('layout', item);
+      }
     });
   }
   // 404页面

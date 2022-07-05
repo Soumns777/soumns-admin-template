@@ -1,51 +1,33 @@
 <script lang="ts" setup>
 import store from '@/store/index';
-
-import { RouteLocationMatched, RouteRecordName } from 'vue-router';
+import { ArrowRight } from '@element-plus/icons-vue';
+import { InjectionKey } from 'vue';
+import {
+  RouteLocationMatched,
+  RouteLocationRaw,
+  RouteRecordName,
+} from 'vue-router';
 import { TabsPaneContext } from 'element-plus/lib/tokens/tabs';
+import { BgColorKey } from '@/types/dataScreen';
 
 const authStore = store().Auth;
 const tabStore = store().Tabs;
 const router = useRouter();
 const route = useRoute();
-console.log(route, '💙💛 route');
-
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath, '💙💛 选中项');
-};
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath);
-};
-
-const changePages = (event: any) => {
-  console.log(event, '💙💛');
-};
 
 const activeMenu = $computed((): string => route.path);
-
 const breadcrumbList: RouteLocationMatched[] = $computed(() => {
   return route.matched.filter((item) => item.meta && item.meta.title);
 });
 
+const activeTabPath = $computed(() => tabStore.activeTabPath);
 const tabClick = (tabItem: TabsPaneContext) => {
-  console.log(tabItem, '💙💛 tabs items');
-
-  router.push({
-    name: tabItem.props.name as RouteRecordName,
-  });
-};
-
-const removeTab = (activeTabPath: any) => {
-  console.log(activeTabPath, '💙💛  activeTabPath');
-
-  tabStore.removeTabs(activeTabPath);
+  router.push(tabItem.props.name as RouteLocationRaw);
 };
 
 watch(
   () => route.path,
   () => {
-    console.log(route, '💙💛 route');
-
     const tab: Tabs.ITab = {
       name: route.name as string,
       path: route.path,
@@ -55,14 +37,33 @@ watch(
     };
 
     tabStore.addTabs(tab);
+  },
+  {
+    immediate: true,
   }
 );
+
+const removeTab = (activeTabPath: any) => {
+  tabStore.removeTabs(activeTabPath);
+};
+
+// 测试provide、inject
+const colorRef = ref('#ff6100');
+
+const setColor = (color: string): void => {
+  colorRef.value = color;
+};
+
+provide(BgColorKey, {
+  color: colorRef,
+  setColor,
+});
 </script>
 
 <template>
-  <div class="common-layout" min-h-screen>
+  <div min-h-screen>
     <el-container>
-      <el-aside min-h-screen width="200px" bg="blue-300">
+      <el-aside width="200px" h="100%">
         <div
           w="100%"
           h="80px"
@@ -76,57 +77,64 @@ watch(
           Soumns-Admin
         </div>
 
-        <el-menu
-          class="el-menu-vertical-demo min-h-[calc(100vh-60px)]"
-          @open="handleOpen"
-          @close="handleClose"
-          background-color="black"
-          text-color="#fff"
-          active-text-color="#87CEFA"
-          :style="{ borderRight: '0' }"
-          router
-          unique-opened
-          :default-active="activeMenu"
-        >
-          <template
-            v-for="(item, idx) in authStore.authRoutes"
-            :key="item.path"
+        <!-- min-h-[calc(100vh-80px)] -->
+        <div class="menu">
+          <el-menu
+            class="el-menu-vertical-demo min-h-[calc(100vh-80px)]"
+            background-color="black"
+            text-color="#fff"
+            active-text-color="#87CEFA"
+            :style="{ borderRight: '0' }"
+            router
+            unique-opened
+            :default-active="activeMenu"
           >
-            <el-sub-menu
-              v-if="item.children && item.children.length > 0"
-              :index="item.path"
+            <template
+              v-for="(item, idx) in authStore.authRoutes"
+              :key="item.path"
             >
-              <template #title>
-                <el-icon><location /></el-icon>
-                <span>{{ item.name }}</span>
-              </template>
-              <el-menu-item
-                :index="it1.path"
-                v-for="(it1, idx1) in item.children"
-                :key="idx1"
-                @click="changePages"
+              <el-sub-menu
+                v-if="item.children && item.children.length > 0"
+                :index="item.path"
               >
                 <template #title>
-                  <el-icon><location /></el-icon>
-                </template>
-                {{ it1.name }}</el-menu-item
-              >
-            </el-sub-menu>
+                  <el-icon>
+                    <component :is="item.meta.icon"></component>
+                  </el-icon>
 
-            <el-menu-item v-else :index="item.path">
-              <template #title>
-                <el-icon><location /></el-icon>
-                <span>{{ item.name }}</span>
-              </template>
-            </el-menu-item>
-          </template>
-        </el-menu>
+                  <span>{{ item.meta.title }}</span>
+                </template>
+                <el-menu-item
+                  :index="it1.path"
+                  v-for="(it1, idx1) in item.children"
+                  :key="idx1"
+                >
+                  <template #title>
+                    <el-icon>
+                      <component :is="it1.meta.icon"></component>
+                    </el-icon>
+                    {{ it1.meta.title }}
+                  </template>
+                </el-menu-item>
+              </el-sub-menu>
+
+              <el-menu-item v-else :index="item.path">
+                <template #title>
+                  <el-icon>
+                    <component :is="item.meta.icon"></component>
+                  </el-icon>
+                  <span>{{ item.meta.title }}</span>
+                </template>
+              </el-menu-item>
+            </template>
+          </el-menu>
+        </div>
       </el-aside>
 
       <el-container>
         <el-header bg="#fff">
           <el-breadcrumb
-            separator="/"
+            :separator-icon="ArrowRight"
             flex
             items-center
             p="l20px"
@@ -138,16 +146,18 @@ watch(
             >
 
             <el-breadcrumb-item
-              v-for="item in breadcrumbList"
+              v-for="item in breadcrumbList.filter(
+                (item) => item.meta.title !== '首页'
+              )"
               :key="item.path"
               :to="{ path: item.path }"
-              >{{ item.name }}</el-breadcrumb-item
+              >{{ item.meta.title }}</el-breadcrumb-item
             >
           </el-breadcrumb>
 
           <div class="tabs-menu">
             <el-tabs
-              v-model="tabStore.activeTabName"
+              v-model="activeTabPath"
               type="card"
               class="demo-tabs"
               @tab-click="tabClick"
@@ -157,9 +167,8 @@ watch(
                 v-for="item in tabStore.tabList"
                 :key="item.name"
                 :label="item.title"
-                :name="item.name"
+                :name="item.path"
                 :closable="item.close"
-                :path="item.path"
               >
                 <template #label>
                   <el-icon class="tabs-icon" v-if="item.icon">
@@ -169,7 +178,7 @@ watch(
                 </template>
               </el-tab-pane>
 
-              <button @click="tabStore.removeAllTabs()">清空</button>
+              <!-- <button @click="tabStore.removeAllTabs()">清空</button>
               <button
                 @click="
                   tabStore.addTabs({
@@ -182,14 +191,34 @@ watch(
                 "
               >
                 初始化
-              </button>
+              </button> -->
             </el-tabs>
           </div>
         </el-header>
 
-        <!-- class="min-h-[calc(100vh-60px)]" -->
-        <el-main bg="#edeff2">
-          <router-view bg="#fff" w="100%" h="100%" />
+        <el-main
+          bg="#edeff2"
+          class="min-h-[calc(100vh-120px)]"
+          box="border"
+          relative
+        >
+          <!-- class="h-[calc(100%-10px)]]" -->
+          <router-view bg="#fff" w="100%" h="94%" />
+
+          <div
+            w="100%"
+            h="40px"
+            flex
+            items-center
+            justify-center
+            bg="#fff"
+            absolute
+            bottom-0px
+            left-0px
+            color="#858585"
+          >
+            2022@Soumns-Admin By Soumns777
+          </div>
         </el-main>
       </el-container>
     </el-container>
@@ -199,6 +228,44 @@ watch(
 <style lang="scss" scoped>
 :deep(.el-header) {
   --el-header-height: 90px;
+}
+
+.el-menu--popup {
+  .el-menu-item {
+    background-color: #191a20;
+    i {
+      margin-right: 5px;
+    }
+    &:hover {
+      i,
+      span {
+        color: #ffffff !important;
+      }
+    }
+    &.is-active {
+      background-color: #060708 !important;
+      &::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 4px;
+        background: $primary-color;
+        content: '';
+      }
+      i,
+      span {
+        color: #ffffff !important;
+      }
+    }
+  }
+}
+.href {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  color: #bdbdc0;
+  text-decoration: none;
 }
 
 :deep(.tabs-menu) {
@@ -236,6 +303,27 @@ watch(
   }
   .el-tabs__item .is-icon-close svg {
     margin-top: 0.5px;
+  }
+}
+
+.el-menu {
+  flex: 1;
+  overflow: auto;
+  overflow-x: hidden;
+  border-right: none;
+  .el-menu-item {
+    &.is-active {
+      background-color: #060708 !important;
+    }
+    &.is-active::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 4px;
+      background: $primary-color;
+      content: '';
+    }
   }
 }
 </style>
