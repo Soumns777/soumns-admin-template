@@ -55,3 +55,8 @@ export interface IPlogin {
 export interface IGenerateRoute {
   pid: number;
 }
+
+export interface IExpose {
+  test_expose: string;
+  changeExpose: (str: string) => void;
+}
