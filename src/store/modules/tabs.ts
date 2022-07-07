@@ -1,4 +1,4 @@
-import { TABS_BLACK_LIST } from '@/config/config';
+import { HOME_URL, TABS_BLACK_LIST } from '@/config/config';
 import router from '@/router/index';
 const useTabs = defineStore('Tabs', {
   state: () => {
@@ -28,7 +28,7 @@ const useTabs = defineStore('Tabs', {
       this.setActiveTabName(tab.path);
     },
 
-    removeTabs(tabPath: string) {
+    removeTab(tabPath: string) {
       const tabList = JSON.parse(JSON.stringify(this.tabList));
       let activeTabPath = this.activeTabPath;
 
@@ -42,6 +42,13 @@ const useTabs = defineStore('Tabs', {
       this.tabList = tabList.filter(
         (item: { path: string }) => item.path !== tabPath
       );
+    },
+
+    // Close MultipleTab
+    async closeMultipleTab(tabsMenuValue?: string) {
+      this.tabList = this.tabList.filter((item) => {
+        return item.path === tabsMenuValue || item.path === HOME_URL;
+      });
     },
 
     removeAllTabs() {

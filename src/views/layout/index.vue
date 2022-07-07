@@ -44,7 +44,7 @@ watch(
 );
 
 const removeTab = (activeTabPath: any) => {
-  tabStore.removeTabs(activeTabPath);
+  tabStore.removeTab(activeTabPath);
 };
 </script>
 

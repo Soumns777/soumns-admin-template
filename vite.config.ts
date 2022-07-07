@@ -72,7 +72,7 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    open: false, // 是否自动在浏览器打开
+    open: true, // 是否自动在浏览器打开
     // 反向代理解决跨域
     proxy: {
       '/api': {

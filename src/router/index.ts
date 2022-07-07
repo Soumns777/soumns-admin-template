@@ -58,6 +58,7 @@ router.beforeEach((to, from, next) => {
 
   // * 判断是否有Token
   const authStore = store().Auth;
+  const tabStore = store().Tabs;
   if (to.name !== 'login' && !authStore.authToken) {
     next({ name: 'login' });
     NProgress.done();
@@ -65,8 +66,10 @@ router.beforeEach((to, from, next) => {
     return;
   } else {
     if (to.name === 'login') {
+      // 清除权限列表和tabs信息
       authStore.clearAuthToken();
       clearDynamicRoutes(authStore, router);
+      tabStore.closeMultipleTab();
       NProgress.done();
     }
     if (!from.name && registerRouteFresh) {
