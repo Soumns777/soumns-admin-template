@@ -40,6 +40,8 @@ const getRef = () => {
   });
 };
 getRef();
+
+const show = $ref(true);
 </script>
 
 <template>
@@ -53,6 +55,20 @@ getRef();
     change-ref
   </button>
   <Father v-model:bgColor="bgColor" v-model:test="test" ref="father" />
+
+  <Transition name="fade-transform">
+    <p v-if="show" style="text-align: center">
+      Hello here is some bouncy text!
+    </p>
+  </Transition>
+
+  <button
+    class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-purple-500 border-none cursor-pointer"
+    m="10px"
+    @click="show = !show"
+  >
+    change-show
+  </button>
 </template>
 
 <style scoped lang="scss">

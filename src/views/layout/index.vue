@@ -191,7 +191,9 @@ const removeTab = (activeTabPath: any) => {
           relative
         >
           <!-- class="h-[calc(100%-10px)]]" -->
-          <router-view bg="#fff" w="100%" h="94%" />
+          <transition appear name="fade-transform" mode="out-in">
+            <router-view bg="#fff" w="100%" h="94%" />
+          </transition>
 
           <div
             w="100%"
