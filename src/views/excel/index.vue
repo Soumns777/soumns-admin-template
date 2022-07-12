@@ -58,21 +58,51 @@ const tableData = [
 
 <template>
   <div class="table-box">
-    <el-table
-      :data="tableData"
-      height="575"
-      :border="true"
-      style="width: 100%"
-      empty-text="真的没有数据啊亲"
-    >
+    <el-table :data="tableData" height="575" :border="true" style="width: 100%">
       <el-table-column type="selection" width="55" />
-      <el-table-column fixed prop="date" label="Date" width="150" />
-      <el-table-column prop="name" label="Name" width="120" />
-      <el-table-column prop="state" label="State" width="120" />
-      <el-table-column prop="city" label="City" width="120" />
-      <el-table-column prop="address" label="Address" width="600" />
-      <el-table-column prop="zip" label="Zip" width="120" />
-      <el-table-column label="操作" fixed="right" width="200">
+      <el-table-column
+        fixed
+        prop="date"
+        label="Date"
+        width="150"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="name"
+        label="Name"
+        width="120"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="state"
+        label="State"
+        width="120"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="city"
+        label="City"
+        width="120"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="address"
+        label="Address"
+        width="600"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        prop="zip"
+        label="Zip"
+        width="120"
+        show-overflow-tooltip
+      />
+      <el-table-column
+        label="操作"
+        fixed="right"
+        width="200"
+        show-overflow-tooltip
+      >
         <el-button type="primary" link :icon="View">查看</el-button>
         <el-button type="primary" link :icon="EditPen">编辑</el-button>
       </el-table-column>
