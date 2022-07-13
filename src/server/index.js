@@ -12,6 +12,7 @@ const app = express();
 
 // 允许跨域资源共享
 const cors = require('cors');
+const { log } = require('console');
 // app.use(cors());
 
 app.use(
@@ -27,28 +28,11 @@ app.use(express.json());
 //配置中间件解析post application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }));
 
+// Login
 app.get('/api/login', (req, res) => {
   console.log(req.query, '💙💛 前台登录获取的数据');
 
   let str = req.query.userName.concat(req.query.password);
-
-  fs.writeFile(
-    'login.json',
-
-    JSON.stringify([
-      {
-        userName: req.query.userName,
-        password: req.query.password,
-        access_token: md5(str),
-      },
-    ]),
-
-    (err) => {
-      if (err) {
-        return;
-      }
-    }
-  );
 
   res.send({
     status: 200,
@@ -125,50 +109,35 @@ app.get('/api/login', (req, res) => {
   });
 });
 
-app.get('/user-router-menu', (req, res) => {
-  console.log(req.body, '--> 初始化路由列表');
-  res.send({
-    status: 200,
-    msg: 'post成功',
-    RESULT_MES: '成功',
-    data: [
-      {
-        id: 1,
-        pid: 0,
-        name: 'home1',
-        path: '/home1',
-        title: '首页',
-      },
-      {
-        id: 2,
-        pid: 1,
-        name: 'login',
-        path: '/home1/login',
-        title: '首页-登录',
-      },
-      {
-        id: 3,
-        pid: 0,
-        name: 'table',
-        title: '表格',
-        path: '/table',
-      },
-      {
-        id: 4,
-        pid: 3,
-        name: 'excel',
-        title: '表格-Excel',
-        path: '/table/excel',
-      },
-      {
-        id: 5,
-        pid: 0,
-        name: 'theme',
-        title: '主题',
-        path: '/theme',
-      },
-    ],
-  });
+// Init TableData
+app.post('/api/init/table-data', (req, res) => {
+  if (req.body.uName) {
+    if (req.body.uName === 'admin') {
+      fs.readFile('table-data.json', 'utf-8', function (err, data) {
+        if (err) {
+          console.log(err, '💛💙 初始化表格数据失败');
+        } else {
+          res.send({
+            status: 200,
+            RESULT_MES: '💛💙初始化表格数据成功',
+            RESULT_CODE: '0000',
+            data: JSON.parse(data),
+          });
+        }
+      });
+    } else {
+      res.send({
+        RESULT_MES: '用户错误',
+        RESULT_CODE: '0001',
+        RESULT_DATA: [],
+      });
+    }
+  } else {
+    res.send({
+      RESULT_MES: '请传入需要初始化的用户',
+      RESULT_CODE: '0002',
+    });
+  }
 });
 
 // 启动服务器

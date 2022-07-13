@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { TableList } from '@/libs/types';
+import { initTable } from '@/services/request';
 import {
   Refresh,
   CirclePlus,
@@ -16,44 +18,19 @@ const handleClick = () => {
   console.log('click');
 };
 
-const tableData = [
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Home',
-  },
-  {
-    date: '2016-05-02',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Office',
-  },
-  {
-    date: '2016-05-04',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Home',
-  },
-  {
-    date: '2016-05-01',
-    name: 'Tom',
-    state: 'California',
-    city: 'Los Angeles',
-    address: 'No. 189, Grove St, Los Angeles',
-    zip: 'CA 90036',
-    tag: 'Office',
-  },
-];
+let tableData: TableList = $ref([]);
+
+const init = async () => {
+  const { data: res } = await initTable({
+    uName: 'admin',
+  });
+  tableData = res;
+  console.log(res, '💛💙 初始化admin表格数据');
+};
+
+onMounted(() => {
+  init();
+});
 </script>
 
 <template>
@@ -82,6 +59,13 @@ const tableData = [
       <el-table-column
         prop="city"
         label="City"
+        width="120"
+        show-overflow-tooltip
+      />
+
+      <el-table-column
+        prop="age"
+        label="Age"
         width="120"
         show-overflow-tooltip
       />

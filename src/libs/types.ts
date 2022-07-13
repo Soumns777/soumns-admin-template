@@ -27,17 +27,6 @@ export interface LoginRes {
   access_token: string;
 }
 
-// type GET_HTTP = ResultData<LoginRes>;
-
-// let get_http: GET_HTTP = {
-//   code: '200',
-//   msg: '测试',
-//   status: '200',
-//   data: {
-//     access_token: '1eqwe',
-//   },
-// };
-
 export interface ITodo {
   id: number;
   content: string;
@@ -60,3 +49,19 @@ export interface IExpose {
   test_expose: string;
   changeExpose: (str: string) => void;
 }
+
+// 初始化表格数据
+export interface ITableParam {
+  uName: string;
+}
+
+export interface ITable {
+  uId: number;
+  uName: string;
+  age: number;
+  gender: string;
+  location: string;
+  [key: string]: any;
+}
+
+export type TableList = ITable[];
