@@ -10,6 +10,8 @@ const fs = require('fs');
 // 创建 web服务器
 const app = express();
 
+var multiparty = require('multiparty');
+
 // 允许跨域资源共享
 const cors = require('cors');
 const { log } = require('console');
@@ -18,7 +20,7 @@ const { log } = require('console');
 app.use(
   cors({
     credentials: true,
-    origin: 'http://localhost:3000', // web前端服务器地址
+    origin: ['http://localhost:3000', 'http://localhost:8081'], // web前端服务器地址
   })
 );
 
@@ -111,6 +113,7 @@ app.get('/api/login', (req, res) => {
 
 // Init TableData
 app.post('/api/init/table-data', (req, res) => {
+  console.log(req.body);
   if (req.body.uName) {
     if (req.body.uName === 'admin') {
       fs.readFile('table-data.json', 'utf-8', function (err, data) {
@@ -138,6 +141,27 @@ app.post('/api/init/table-data', (req, res) => {
       RESULT_CODE: '0002',
     });
   }
+});
+
+// upload image
+app.post('/api/upload-images', (req, res) => {
+  console.log(req.body, '💛💙 上传图片');
+
+  // let from_data = new multiparty.Form();
+  // from_data.parse(req);
+
+  // from_data.on('part', async (part) => {
+  //   if (part.filename) {
+  //     // 保存文件
+  //     let w = fs.createWriteStream(TarName);
+  //     part.pipe(w);
+  //   }
+  // });
+
+  res.send({
+    RESULT_MES: '上传成功',
+    RESULT_CODE: '0000',
+  });
 });
 
 // 启动服务器

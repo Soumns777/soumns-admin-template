@@ -13,6 +13,8 @@ import {
   ArrowDown,
   ArrowUp,
 } from '@element-plus/icons-vue';
+import axios from 'axios';
+import qs from 'qs';
 
 const handleClick = () => {
   console.log('click');
