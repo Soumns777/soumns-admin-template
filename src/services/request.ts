@@ -11,3 +11,12 @@ export const login = (params: ILogin) => {
 export const initTable = (params: ITableParam) => {
   return RequestHttp.post<TableList>('/api/init/table-data', params);
 };
+
+// * 上传图片
+export const uploadImgs = (params: any) => {
+  return RequestHttp.post<any>('/api/upload-images', params, {
+    headers: {
+      'Content-Type': 'multipart/form-data;charset=UTF-8',
+    },
+  });
+};

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { TableList } from '@/libs/types';
-import { initTable } from '@/services/request';
+import { initTable, uploadImgs } from '@/services/request';
 import {
   Refresh,
   CirclePlus,
@@ -30,8 +30,16 @@ const init = async () => {
   console.log(res, '💛💙 初始化admin表格数据');
 };
 
+// const uploadImages = async () => {
+//   let formData = new FormData();
+//   formData.append('name', '小红');
+//   formData.append('age', '18');
+//   const res = await uploadImgs(formData);
+// };
+
 onMounted(() => {
   init();
+  // uploadImages();
 });
 </script>
 
