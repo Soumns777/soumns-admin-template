@@ -1,6 +1,6 @@
 import RequestHttp from '@/libs/http';
 
-import { ILogin, LoginRes, ITableParam, TableList } from '@/libs/types';
+import { ILogin, LoginRes, ITableParam, TableList, ITable } from '@/libs/types';
 
 // * 用户登录接口
 export const login = (params: ILogin) => {
@@ -12,11 +12,17 @@ export const initTable = (params: ITableParam) => {
   return RequestHttp.post<TableList>('/api/init/table-data', params);
 };
 
-// * 上传图片
-export const uploadImgs = (params: any) => {
-  return RequestHttp.post<any>('/api/upload-images', params, {
-    headers: {
-      'Content-Type': 'multipart/form-data;charset=UTF-8',
-    },
-  });
+// * 新增用户
+export const addUser = (params: Partial<ITable>) => {
+  return RequestHttp.post('/api/add-user', params);
+};
+
+// * 删除用户
+export const delUser = (params: { id: string }) => {
+  return RequestHttp.post('/api/del-user', params);
+};
+
+// * 编辑用户
+export const editUser = (params: { id: string; data: Partial<ITable> }) => {
+  return RequestHttp.post('/api/edit-user', params);
 };

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { TableList } from '@/libs/types';
-import { initTable, uploadImgs } from '@/services/request';
+import { ITable, TableList } from '@/libs/types';
+import { initTable, addUser, delUser, editUser } from '@/services/request';
 import {
   Refresh,
   CirclePlus,
@@ -13,40 +13,145 @@ import {
   ArrowDown,
   ArrowUp,
 } from '@element-plus/icons-vue';
-import axios from 'axios';
-import qs from 'qs';
+import { ElMessage } from 'element-plus';
+import EditUser from './components/editUser.vue';
 
-const handleClick = () => {
-  console.log('click');
-};
-
+//  初始化表格数据
 let tableData: TableList = $ref([]);
 
 const init = async () => {
-  const { data: res } = await initTable({
+  const {
+    data: res,
+    RESULT_CODE,
+    RESULT_MSG,
+  } = await initTable({
     uName: 'admin',
   });
-  tableData = res;
-  console.log(res, '💛💙 初始化admin表格数据');
-};
 
-// const uploadImages = async () => {
-//   let formData = new FormData();
-//   formData.append('name', '小红');
-//   formData.append('age', '18');
-//   const res = await uploadImgs(formData);
-// };
+  if (RESULT_CODE == '0000') {
+    tableData = res;
+  } else {
+    return ElMessage.error(RESULT_MSG);
+  }
+};
 
 onMounted(() => {
   init();
-  // uploadImages();
 });
+
+interface IEditExpose {
+  acceptParams: (params: any) => void;
+}
+let editUserRef: IEditExpose = $ref();
+
+// 新增用户
+const add = async () => {
+  // const { RESULT_CODE, RESULT_MSG } = await addUser({
+  //   id: '1',
+  //   date: '2022-01-16',
+  //   name: 'iu',
+  //   gender: 'former',
+  //   age: 22,
+  //   state: 'HeFei',
+  //   city: 'Anhui',
+  //   address: '安徽合肥',
+  //   zip: '90036',
+  //   tag: '老家',
+  // });
+  // if (RESULT_CODE != '0000') {
+  //   return ElMessage.error(RESULT_MSG);
+  // } else {
+  //   ElMessage.success(RESULT_MSG);
+  // }
+  // init();
+
+  let params = {
+    title: '查看',
+    isView: true,
+    apiUrl: '新增',
+  };
+
+  editUserRef.acceptParams(params);
+};
+
+// 删除用户
+const del = async () => {
+  const { RESULT_CODE, RESULT_MSG } = await delUser({ id: '1' });
+
+  if (RESULT_CODE != '0000') {
+    return ElMessage.error(RESULT_MSG);
+  } else {
+    ElMessage.success(RESULT_MSG);
+  }
+  init();
+};
+
+// 编辑用户
+const edit = async () => {
+  const { RESULT_CODE, RESULT_MSG } = await editUser({
+    id: '1',
+    data: {
+      date: '2022-02-02',
+      name: 'yoona',
+      gender: 'former',
+      age: 28,
+      state: 'Wuhui',
+      city: 'Anhui',
+      address: '安徽芜湖',
+      zip: '90036',
+      tag: '老家',
+    },
+  });
+
+  if (RESULT_CODE != '0000') {
+    return ElMessage.error(RESULT_MSG);
+  } else {
+    ElMessage.success(RESULT_MSG);
+  }
+  init();
+};
 </script>
 
 <template>
   <div class="table-box">
+    <div flex items-center m="t10px b20px">
+      <button
+        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-blue-500 border-none cursor-pointer"
+        m="10px"
+        w="130px"
+        @click="add()"
+      >
+        新增用户
+      </button>
+
+      <button
+        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-orange-500 border-none cursor-pointer"
+        m="10px"
+        w="130px"
+        @click="del()"
+      >
+        删除用户
+      </button>
+
+      <button
+        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none cursor-pointer"
+        m="10px"
+        w="130px"
+        @click="edit()"
+      >
+        编辑用户
+      </button>
+    </div>
+
     <el-table :data="tableData" height="575" :border="true" style="width: 100%">
       <el-table-column type="selection" width="55" />
+      <el-table-column
+        fixed
+        prop="id"
+        label="ID"
+        width="150"
+        show-overflow-tooltip
+      />
       <el-table-column
         fixed
         prop="date"
@@ -107,6 +212,8 @@ onMounted(() => {
         </div>
       </template>
     </el-table>
+
+    <EditUser ref="editUserRef" />
   </div>
 </template>
 

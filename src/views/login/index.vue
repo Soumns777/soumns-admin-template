@@ -48,16 +48,14 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       //   ElMessage.success('校验成功!');
       loading = true;
       try {
-        const res = await login({
+        const { RESULT_CODE, RESULT_MSG, data } = await login({
           userName: ruleForm.userName,
           password: md5(ruleForm.password),
         });
 
-        if (res.status == '200') {
-          authStore.setAuthToken(res.data.access_token);
-          authStore.setAuthRoutes(
-            generateRoute(formatTree(res.data.routeList))
-          );
+        if (RESULT_CODE === '0000') {
+          authStore.setAuthToken(data.access_token);
+          authStore.setAuthRoutes(generateRoute(formatTree(data.routeList)));
           addDynamicRoutes(authStore, router);
 
           console.log(router.getRoutes(), '💙💛 getRoutes');

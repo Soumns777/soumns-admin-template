@@ -20,7 +20,11 @@ const { log } = require('console');
 app.use(
   cors({
     credentials: true,
-    origin: ['http://localhost:3000', 'http://localhost:8081'], // web前端服务器地址
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:8081',
+    ], // web前端服务器地址
   })
 );
 
@@ -30,6 +34,48 @@ app.use(express.json());
 //配置中间件解析post application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }));
 
+// 读取文件JSON数据
+function read() {
+  return fs.readFileSync('table-data.json', 'utf-8', function (err, data) {
+    if (err) {
+      console.log(err, '💛💙 初始化表格数据失败');
+      return [];
+    } else {
+      return data;
+    }
+  });
+}
+
+// 书写文件JSON数据
+function write(data) {
+  let sortData = data.sort(sortList('id'));
+  fs.writeFile('table-data.json', JSON.stringify(data), (err) => {
+    if (err) console.log(err, '💛💙 写入新增用户数据失败');
+    else {
+      console.log(
+        JSON.parse(fs.readFileSync('table-data.json', 'utf8')),
+        '💛💙 写入新增用户数据成功'
+      );
+    }
+  });
+}
+
+// 数组对象进行排序 按照一个指定的key对数组对象进行排序
+function sortList(propertyName) {
+  var datalist = (object1, object2) => {
+    var value1 = object1[propertyName];
+    var value2 = object2[propertyName];
+    if (value1 < value2) {
+      return -1;
+    } else if (value1 > value2) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+  return datalist;
+}
+
 // Login
 app.get('/api/login', (req, res) => {
   console.log(req.query, '💙💛 前台登录获取的数据');
@@ -37,8 +83,8 @@ app.get('/api/login', (req, res) => {
   let str = req.query.userName.concat(req.query.password);
 
   res.send({
-    status: 200,
-    msg: '登录成功',
+    RESULT_MSG: '登录成功',
+    RESULT_CODE: '0000',
     data: {
       access_token: md5(str),
       routeList: [
@@ -113,32 +159,107 @@ app.get('/api/login', (req, res) => {
 
 // Init TableData
 app.post('/api/init/table-data', (req, res) => {
-  console.log(req.body);
   if (req.body.uName) {
     if (req.body.uName === 'admin') {
-      fs.readFile('table-data.json', 'utf-8', function (err, data) {
-        if (err) {
-          console.log(err, '💛💙 初始化表格数据失败');
-        } else {
-          res.send({
-            status: 200,
-            RESULT_MES: '💛💙初始化表格数据成功',
-            RESULT_CODE: '0000',
-            data: JSON.parse(data),
-          });
-        }
-      });
+      let reverseData = JSON.parse(read());
+
+      if (reverseData && reverseData.length > 0) {
+        res.send({
+          RESULT_MSG: '💛💙初始化表格数据成功',
+          RESULT_CODE: '0000',
+          data: reverseData,
+        });
+      } else {
+        res.send({
+          RESULT_MSG: '初始化未知报错',
+          RESULT_CODE: '0001',
+          data: [],
+        });
+      }
     } else {
       res.send({
-        RESULT_MES: '用户错误',
+        RESULT_MSG: '用户错误',
         RESULT_CODE: '0001',
         RESULT_DATA: [],
       });
     }
   } else {
     res.send({
-      RESULT_MES: '请传入需要初始化的用户',
+      RESULT_MSG: '请传入需要初始化的用户',
       RESULT_CODE: '0002',
+    });
+  }
+});
+
+// 新增用户
+app.post('/api/add-user', (req, res) => {
+  let reverseData = JSON.parse(read());
+
+  if (!reverseData.find((item) => item.id == req.body.id)) {
+    reverseData.push(req.body);
+    write(reverseData);
+    res.send({
+      RESULT_MSG: '新增用户成功',
+      RESULT_CODE: '0000',
+    });
+  } else {
+    res.send({
+      RESULT_MSG: '该用户已经创建,不能重复创建!',
+      RESULT_CODE: '0003',
+    });
+  }
+});
+
+// 删除用户
+app.post('/api/del-user', (req, res) => {
+  let transferData = JSON.parse(read());
+
+  if (transferData && transferData.length > 0) {
+    if (transferData.find((item) => item.id == req.body.id)) {
+      transferData = transferData.filter((item) => item.id != req.body.id);
+      write(transferData);
+      res.send({
+        RESULT_MSG: '删除用户成功',
+        RESULT_CODE: '0000',
+      });
+    } else {
+      res.send({
+        RESULT_MSG: '请不要删除不存在的用户',
+        RESULT_CODE: '0002',
+      });
+    }
+  } else {
+    res.send({
+      RESULT_MSG: '删除用户失败',
+      RESULT_CODE: '0001',
+    });
+  }
+});
+
+// 编辑用户
+app.post('/api/edit-user', (req, res) => {
+  let transferData = JSON.parse(read());
+
+  if (transferData && transferData.length > 0) {
+    let idx = transferData.findIndex((item) => item.id == req.body.id);
+
+    if (idx > 0) {
+      transferData[idx] = Object.assign({ id: req.body.id }, req.body.data);
+      write(transferData);
+      res.send({
+        RESULT_MSG: '编辑用户成功',
+        RESULT_CODE: '0000',
+      });
+    } else {
+      res.send({
+        RESULT_MSG: '请不要编辑不存在的用户',
+        RESULT_CODE: '0002',
+      });
+    }
+  } else {
+    res.send({
+      RESULT_MSG: '编辑用户用户失败',
+      RESULT_CODE: '0001',
     });
   }
 });
@@ -147,19 +268,8 @@ app.post('/api/init/table-data', (req, res) => {
 app.post('/api/upload-images', (req, res) => {
   console.log(req.body, '💛💙 上传图片');
 
-  // let from_data = new multiparty.Form();
-  // from_data.parse(req);
-
-  // from_data.on('part', async (part) => {
-  //   if (part.filename) {
-  //     // 保存文件
-  //     let w = fs.createWriteStream(TarName);
-  //     part.pipe(w);
-  //   }
-  // });
-
   res.send({
-    RESULT_MES: '上传成功',
+    RESULT_MSG: '上传成功',
     RESULT_CODE: '0000',
   });
 });
