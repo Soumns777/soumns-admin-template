@@ -2,7 +2,7 @@
   <el-drawer
     v-model="drawerVisible"
     :destroy-on-close="true"
-    size="600px"
+    size="500px"
     :title="`${drawerData.title}用户`"
   >
     抽屉

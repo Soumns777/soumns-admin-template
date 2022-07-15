@@ -243,7 +243,9 @@ app.post('/api/edit-user', (req, res) => {
   if (transferData && transferData.length > 0) {
     let idx = transferData.findIndex((item) => item.id == req.body.id);
 
-    if (idx > 0) {
+    console.log(idx, '💛💙 idx');
+
+    if (idx >= 0) {
       transferData[idx] = Object.assign({ id: req.body.id }, req.body.data);
       write(transferData);
       res.send({

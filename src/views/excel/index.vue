@@ -46,24 +46,24 @@ let editUserRef: IEditExpose = $ref();
 
 // 新增用户
 const add = async () => {
-  // const { RESULT_CODE, RESULT_MSG } = await addUser({
-  //   id: '1',
-  //   date: '2022-01-16',
-  //   name: 'iu',
-  //   gender: 'former',
-  //   age: 22,
-  //   state: 'HeFei',
-  //   city: 'Anhui',
-  //   address: '安徽合肥',
-  //   zip: '90036',
-  //   tag: '老家',
-  // });
-  // if (RESULT_CODE != '0000') {
-  //   return ElMessage.error(RESULT_MSG);
-  // } else {
-  //   ElMessage.success(RESULT_MSG);
-  // }
-  // init();
+  const { RESULT_CODE, RESULT_MSG } = await addUser({
+    id: '1',
+    date: '2022-01-16',
+    name: 'iu',
+    gender: 'former',
+    age: 22,
+    state: 'HeFei',
+    city: 'Anhui',
+    address: '安徽合肥',
+    zip: '90036',
+    tag: '老家',
+  });
+  if (RESULT_CODE != '0000') {
+    return ElMessage.error(RESULT_MSG);
+  } else {
+    ElMessage.success(RESULT_MSG);
+  }
+  init();
 
   let params = {
     title: '查看',
