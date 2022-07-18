@@ -18,11 +18,11 @@ export const addUser = (params: Partial<ITable>) => {
 };
 
 // * 删除用户
-export const delUser = (params: { id: string }) => {
+export const delUser = (params: Partial<ITable>) => {
   return RequestHttp.post('/api/del-user', params);
 };
 
 // * 编辑用户
-export const editUser = (params: { id: string; data: Partial<ITable> }) => {
+export const editUser = (params: Partial<ITable>) => {
   return RequestHttp.post('/api/edit-user', params);
 };

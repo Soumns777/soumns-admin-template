@@ -10,12 +10,8 @@ const fs = require('fs');
 // 创建 web服务器
 const app = express();
 
-var multiparty = require('multiparty');
-
 // 允许跨域资源共享
 const cors = require('cors');
-const { log } = require('console');
-// app.use(cors());
 
 app.use(
   cors({
@@ -194,20 +190,14 @@ app.post('/api/init/table-data', (req, res) => {
 // 新增用户
 app.post('/api/add-user', (req, res) => {
   let reverseData = JSON.parse(read());
-
-  if (!reverseData.find((item) => item.id == req.body.id)) {
-    reverseData.push(req.body);
-    write(reverseData);
-    res.send({
-      RESULT_MSG: '新增用户成功',
-      RESULT_CODE: '0000',
-    });
-  } else {
-    res.send({
-      RESULT_MSG: '该用户已经创建,不能重复创建!',
-      RESULT_CODE: '0003',
-    });
-  }
+  reverseData.push(
+    Object.assign(req.body, { id: reverseData[reverseData.length - 1].id })
+  );
+  write(reverseData);
+  res.send({
+    RESULT_MSG: '新增用户成功',
+    RESULT_CODE: '0000',
+  });
 });
 
 // 删除用户
@@ -243,10 +233,9 @@ app.post('/api/edit-user', (req, res) => {
   if (transferData && transferData.length > 0) {
     let idx = transferData.findIndex((item) => item.id == req.body.id);
 
-    console.log(idx, '💛💙 idx');
-
     if (idx >= 0) {
-      transferData[idx] = Object.assign({ id: req.body.id }, req.body.data);
+      transferData[idx] = req.body;
+
       write(transferData);
       res.send({
         RESULT_MSG: '编辑用户成功',

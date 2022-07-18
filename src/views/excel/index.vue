@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ITable, TableList } from '@/libs/types';
+import { ITable, ITableParam, TableList } from '@/libs/types';
 import { initTable, addUser, delUser, editUser } from '@/services/request';
 import {
   Refresh,
@@ -13,7 +13,7 @@ import {
   ArrowDown,
   ArrowUp,
 } from '@element-plus/icons-vue';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import EditUser from './components/editUser.vue';
 
 //  初始化表格数据
@@ -39,76 +39,60 @@ onMounted(() => {
   init();
 });
 
+// 利用ref+defineExpose传递参数给子组件
 interface IEditExpose {
   acceptParams: (params: any) => void;
 }
 let editUserRef: IEditExpose = $ref();
 
-// 新增用户
-const add = async () => {
-  const { RESULT_CODE, RESULT_MSG } = await addUser({
-    id: '1',
-    date: '2022-01-16',
-    name: 'iu',
-    gender: 'former',
-    age: 22,
-    state: 'HeFei',
-    city: 'Anhui',
-    address: '安徽合肥',
-    zip: '90036',
-    tag: '老家',
-  });
-  if (RESULT_CODE != '0000') {
-    return ElMessage.error(RESULT_MSG);
-  } else {
-    ElMessage.success(RESULT_MSG);
-  }
-  init();
-
+// 编辑用户 (新增、查看、编辑)
+const openDrawer = async (title: string, rowData: Partial<ITable> = {}) => {
   let params = {
-    title: '查看',
-    isView: true,
-    apiUrl: '新增',
+    title,
+    rowData,
+    isView: title == '查看' ? true : false,
+    apiUrl: title === '新增' ? addUser : title === '编辑' ? editUser : '',
+    getTableList: init,
   };
 
   editUserRef.acceptParams(params);
 };
 
 // 删除用户
-const del = async () => {
-  const { RESULT_CODE, RESULT_MSG } = await delUser({ id: '1' });
+const del = (rowData: ITable) => {
+  ElMessageBox.confirm('您确定要删除当前用户吗?', '友情提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(async () => {
+      const { RESULT_CODE, RESULT_MSG } = await delUser(rowData);
 
-  if (RESULT_CODE != '0000') {
-    return ElMessage.error(RESULT_MSG);
-  } else {
-    ElMessage.success(RESULT_MSG);
-  }
-  init();
+      if (RESULT_CODE != '0000') {
+        return ElMessage.error(RESULT_MSG);
+      }
+
+      ElMessage.success(RESULT_MSG);
+      console.log(RESULT_CODE, RESULT_MSG, '💛💙 删除用户成功');
+      init();
+    })
+    .catch(() => {
+      console.log('💛💙 取消删除用户');
+    });
 };
 
-// 编辑用户
-const edit = async () => {
-  const { RESULT_CODE, RESULT_MSG } = await editUser({
-    id: '1',
-    data: {
-      date: '2022-02-02',
-      name: 'yoona',
-      gender: 'former',
-      age: 28,
-      state: 'Wuhui',
-      city: 'Anhui',
-      address: '安徽芜湖',
-      zip: '90036',
-      tag: '老家',
-    },
-  });
+// 分页
+let pageAble = $ref({
+  pageNum: 1, // 当前页页数
+  pageSize: 10, // 每页显示条数
+  total: 0, // 总条数
+});
 
-  if (RESULT_CODE != '0000') {
-    return ElMessage.error(RESULT_MSG);
-  } else {
-    ElMessage.success(RESULT_MSG);
-  }
-  init();
+const handleSizeChange = () => {
+  console.log('💛💙 改变页数');
+};
+const handleCurrentChange = () => {
+  console.log('💛💙 改变当前页');
 };
 </script>
 
@@ -119,92 +103,86 @@ const edit = async () => {
         class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-blue-500 border-none cursor-pointer"
         m="10px"
         w="130px"
-        @click="add()"
+        @click="openDrawer('新增')"
       >
         新增用户
-      </button>
-
-      <button
-        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-orange-500 border-none cursor-pointer"
-        m="10px"
-        w="130px"
-        @click="del()"
-      >
-        删除用户
-      </button>
-
-      <button
-        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none cursor-pointer"
-        m="10px"
-        w="130px"
-        @click="edit()"
-      >
-        编辑用户
       </button>
     </div>
 
     <el-table :data="tableData" height="575" :border="true" style="width: 100%">
       <el-table-column type="selection" width="55" />
-      <el-table-column
-        fixed
-        prop="id"
-        label="ID"
-        width="150"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        fixed
-        prop="date"
-        label="Date"
-        width="150"
-        show-overflow-tooltip
-      />
+
       <el-table-column
         prop="name"
-        label="Name"
+        label="用户姓名"
         width="120"
         show-overflow-tooltip
       />
       <el-table-column
-        prop="state"
-        label="State"
-        width="120"
+        prop="gender"
+        label="性别"
         show-overflow-tooltip
-      />
+        width="120"
+        v-slot="scope"
+      >
+        {{ scope.row.gender == 'male' ? '男' : '女' }}
+      </el-table-column>
+
       <el-table-column
-        prop="city"
-        label="City"
+        prop="age"
+        label="年龄"
         width="120"
         show-overflow-tooltip
       />
 
       <el-table-column
-        prop="age"
-        label="Age"
-        width="120"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="address"
-        label="Address"
-        width="600"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        prop="zip"
-        label="Zip"
-        width="120"
-        show-overflow-tooltip
-      />
-      <el-table-column
-        label="操作"
-        fixed="right"
+        prop="idCard"
+        label="身份证号"
         width="200"
         show-overflow-tooltip
-      >
-        <el-button type="primary" link :icon="View">查看</el-button>
-        <el-button type="primary" link :icon="EditPen">编辑</el-button>
+      />
+
+      <el-table-column
+        prop="email"
+        label="邮箱"
+        width="200"
+        show-overflow-tooltip
+      />
+
+      <el-table-column
+        prop="address"
+        label="现居地址"
+        width="300"
+        show-overflow-tooltip
+      />
+
+      <el-table-column
+        prop="createdDate"
+        label="创建时间"
+        width="200"
+        show-overflow-tooltip
+      />
+
+      <el-table-column label="操作" fixed="right" width="300" v-slot="scope">
+        <el-button
+          type="primary"
+          link
+          :icon="View"
+          @click="openDrawer('查看', scope.row)"
+          >查看</el-button
+        >
+        <el-button
+          type="primary"
+          link
+          :icon="EditPen"
+          @click="openDrawer('编辑', scope.row)"
+          >编辑</el-button
+        >
+        <el-button type="primary" link :icon="Delete" @click="del(scope.row)"
+          >删除</el-button
+        >
       </el-table-column>
+
       <template #empty>
         <div class="table-empty">
           <img src="@/assets/uploads/notData.png" alt="notData" />
@@ -213,8 +191,17 @@ const edit = async () => {
       </template>
     </el-table>
 
+    <el-pagination
+      v-model:currentPage="pageAble.pageNum"
+      v-model:page-size="pageAble.pageSize"
+      :page-sizes="[5, 8, 10, 12]"
+      background
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="100"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    />
+
     <EditUser ref="editUserRef" />
   </div>
 </template>
-
-<style scoped lang="scss"></style>

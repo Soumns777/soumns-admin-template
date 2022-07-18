@@ -19,7 +19,7 @@
     "@vueuse/core": "^8.6.0",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
-    "element-plus": "^2.2.0",
+    "element-plus": "2.2.6",
     "express": "^4.18.1",
     "js-md5": "^0.7.3",
     "multiparty": "^4.2.3",
