@@ -9,8 +9,9 @@ export interface Result {
 /**
  * @desc 请求响应参数(包含data)
  */
-export interface ResultData<T = any> extends Result {
-  data: T;
+export interface ResultData extends Result {
+  data: TableList;
+  total: number;
 }
 
 /**
@@ -52,6 +53,8 @@ export interface IExpose {
 // 初始化表格数据
 export interface ITableParam {
   uName: string;
+  pageNum?: number; // 可选
+  pageSize?: number; // 可选
 }
 
 export interface ITable {
@@ -60,6 +63,7 @@ export interface ITable {
   age: number;
   gender: string;
   location: string;
+  total: number;
   [key: string]: any;
 }
 

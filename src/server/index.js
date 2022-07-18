@@ -72,6 +72,16 @@ function sortList(propertyName) {
   return datalist;
 }
 
+// 将一个数组拆分成几个一定个数的数组块
+function chunk(arr, size) {
+  var arr2 = [];
+  for (var i = 0; i < arr.length; i = i + size) {
+    arr2.push(arr.slice(i, i + size));
+  }
+
+  return arr2;
+}
+
 // Login
 app.get('/api/login', (req, res) => {
   console.log(req.query, '💙💛 前台登录获取的数据');
@@ -157,13 +167,18 @@ app.get('/api/login', (req, res) => {
 app.post('/api/init/table-data', (req, res) => {
   if (req.body.uName) {
     if (req.body.uName === 'admin') {
-      let reverseData = JSON.parse(read());
+      let reverseData = chunk(JSON.parse(read()), req.body.pageSize)[
+        req.body.pageNum - 1
+      ];
+
+      console.log(reverseData, `💛💙 获取第 ${req.body.pageNum} 页数据`);
 
       if (reverseData && reverseData.length > 0) {
         res.send({
           RESULT_MSG: '💛💙初始化表格数据成功',
           RESULT_CODE: '0000',
           data: reverseData,
+          total: JSON.parse(read()).length,
         });
       } else {
         res.send({
@@ -191,7 +206,7 @@ app.post('/api/init/table-data', (req, res) => {
 app.post('/api/add-user', (req, res) => {
   let reverseData = JSON.parse(read());
   reverseData.push(
-    Object.assign(req.body, { id: reverseData[reverseData.length - 1].id })
+    Object.assign({ id: reverseData[reverseData.length - 1].id }, req.body)
   );
   write(reverseData);
   res.send({

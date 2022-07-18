@@ -14,22 +14,38 @@ import {
   ArrowUp,
 } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { zhCn } from 'element-plus/es/locale';
 import EditUser from './components/editUser.vue';
+
+// 分页
+let pageAble = $ref({
+  pageNum: 1, // 当前页页数
+  pageSize: 3, // 每页显示条数
+  total: 0, // 总条数
+});
 
 //  初始化表格数据
 let tableData: TableList = $ref([]);
+let tableParams = reactive<ITableParam>({
+  uName: 'admin',
+  pageNum: pageAble.pageNum,
+  pageSize: pageAble.pageSize,
+});
 
 const init = async () => {
+  console.log(tableParams, '💛💙 初始化表格数据请求参数');
   const {
     data: res,
     RESULT_CODE,
     RESULT_MSG,
-  } = await initTable({
-    uName: 'admin',
-  });
+    total,
+  } = await initTable(tableParams);
+
+  console.log(res, total, RESULT_CODE, RESULT_MSG, '💛💙 total pingation');
 
   if (RESULT_CODE == '0000') {
     tableData = res;
+    pageAble.total = total;
   } else {
     return ElMessage.error(RESULT_MSG);
   }
@@ -82,11 +98,6 @@ const del = (rowData: ITable) => {
 };
 
 // 分页
-let pageAble = $ref({
-  pageNum: 1, // 当前页页数
-  pageSize: 10, // 每页显示条数
-  total: 0, // 总条数
-});
 
 const handleSizeChange = () => {
   console.log('💛💙 改变页数');
@@ -194,10 +205,10 @@ const handleCurrentChange = () => {
     <el-pagination
       v-model:currentPage="pageAble.pageNum"
       v-model:page-size="pageAble.pageSize"
-      :page-sizes="[5, 8, 10, 12]"
+      :page-sizes="[3, 4, 5, 6]"
       background
       layout="total, sizes, prev, pager, next, jumper"
-      :total="100"
+      :total="pageAble.total"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
