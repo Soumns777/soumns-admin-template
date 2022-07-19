@@ -14,26 +14,33 @@ import {
   ArrowUp,
 } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { zhCn } from 'element-plus/es/locale';
 import EditUser from './components/editUser.vue';
+import { GENDER_TYPE } from '@/libs/constant';
+// 搜索条件
+let searchParams = $ref<Partial<ITable>>({
+  name: '',
+  gender: '',
+  age: '',
+});
 
 // 分页
-let pageAble = $ref({
+let pageAble = reactive({
   pageNum: 1, // 当前页页数
-  pageSize: 3, // 每页显示条数
+  pageSize: 6, // 每页显示条数
   total: 0, // 总条数
 });
 
 //  初始化表格数据
 let tableData: TableList = $ref([]);
-let tableParams = reactive<ITableParam>({
+const tableParams = reactive<ITableParam>({
   uName: 'admin',
-  pageNum: pageAble.pageNum,
-  pageSize: pageAble.pageSize,
+  pageNum: toRef(pageAble, 'pageNum'),
+  pageSize: toRef(pageAble, 'pageSize'),
+  search: searchParams,
 });
 
 const init = async () => {
-  console.log(tableParams, '💛💙 初始化表格数据请求参数');
+  console.log(tableParams, '💛💙 init tableParams');
   const {
     data: res,
     RESULT_CODE,
@@ -98,25 +105,114 @@ const del = (rowData: ITable) => {
 };
 
 // 分页
-
-const handleSizeChange = () => {
-  console.log('💛💙 改变页数');
+const changePageSize = (pageSize: number) => {
+  pageAble.pageSize = pageSize;
+  init();
 };
-const handleCurrentChange = () => {
-  console.log('💛💙 改变当前页');
+
+const changePageNum = (pageNum: number) => {
+  pageAble.pageNum = pageNum;
+  init();
+};
+
+// 搜素
+const search = () => {
+  const { name, age, gender } = toRefs(searchParams);
+
+  if (!(name?.value || age?.value || gender?.value)) {
+    return ElMessage.warning('请先选择一个搜索项再进行搜索!');
+  }
+
+  init();
+};
+
+// 检测搜索条件,没有筛选条件重置表格数据
+watchEffect(() => {
+  const { name, age, gender } = toRefs(searchParams);
+  if (!(name.value || age?.value || gender?.value)) {
+    init();
+  }
+});
+// 重置
+const reset = () => {
+  searchParams.name = '';
+  searchParams.age = '';
+  searchParams.gender = '';
 };
 </script>
 
 <template>
   <div class="table-box">
-    <div flex items-center m="t10px b20px">
+    <div flex items-center m="t10px l20px">
+      <el-form
+        ref="formRef"
+        :model="searchParams"
+        :inline="true"
+        label-width="100px"
+      >
+        <el-form-item label="用户姓名 :">
+          <el-input
+            v-model="searchParams.name"
+            placeholder="请输入用户姓名"
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="性别 :">
+          <el-select
+            v-model="searchParams.gender"
+            placeholder="请选择性别"
+            clearable
+          >
+            <el-option
+              v-for="item in GENDER_TYPE"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="年龄 :">
+          <el-input
+            v-model="searchParams.age"
+            placeholder="请输入年龄"
+            clearable
+          ></el-input>
+        </el-form-item>
+      </el-form>
+    </div>
+
+    <div flex items-center m="t10px b20px l20px">
       <button
         class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-blue-500 border-none cursor-pointer"
+        relative
         m="10px"
         w="130px"
         @click="openDrawer('新增')"
       >
+        <CirclePlus absolute w="18px" h="18px" left-16px top-8px />
         新增用户
+      </button>
+
+      <button
+        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none cursor-pointer"
+        relative
+        m="10px"
+        w="130px"
+        @click="search()"
+      >
+        <Search absolute w="18px" h="18px" left-30px top-8px />
+        搜索
+      </button>
+
+      <button
+        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-orange-500 border-none cursor-pointer"
+        relative
+        m="10px"
+        w="130px"
+        @click="reset()"
+      >
+        <Delete absolute w="18px" h="18px" left-30px top-8px />
+        重置
       </button>
     </div>
 
@@ -209,8 +305,8 @@ const handleCurrentChange = () => {
       background
       layout="total, sizes, prev, pager, next, jumper"
       :total="pageAble.total"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
+      @size-change="changePageSize"
+      @current-change="changePageNum"
     />
 
     <EditUser ref="editUserRef" />

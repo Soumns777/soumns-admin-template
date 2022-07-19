@@ -1,3 +1,5 @@
+import { Ref } from 'vue';
+
 /**
  * @desc 请求响应参数(不包含data)
  */
@@ -53,14 +55,19 @@ export interface IExpose {
 // 初始化表格数据
 export interface ITableParam {
   uName: string;
-  pageNum?: number; // 可选
-  pageSize?: number; // 可选
+  pageNum?: Ref;
+  pageSize?: Ref;
+  search: {
+    name?: string;
+    gender?: string;
+    age?: number | string;
+  };
 }
 
 export interface ITable {
   uId: number;
   uName: string;
-  age: number;
+  age: string | number;
   gender: string;
   location: string;
   total: number;

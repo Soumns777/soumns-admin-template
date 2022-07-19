@@ -82,6 +82,37 @@ function chunk(arr, size) {
   return arr2;
 }
 
+// 多条件筛选数据
+function filterAnything(aim, name, age, gender) {
+  let returnData = aim;
+  if (name != '') {
+    returnData = returnData.filter((item) => item.name == name);
+    if (age != '') {
+      returnData = returnData.filter((item) => item.age == age);
+      if (gender != '') {
+        returnData = returnData.filter((item) => item.gender == gender);
+      }
+    } else {
+      if (gender != '') {
+        returnData = returnData.filter((item) => item.gender == gender);
+      }
+    }
+  } else {
+    if (age != '') {
+      returnData = returnData.filter((item) => item.age == age);
+      if (gender != '') {
+        returnData = returnData.filter((item) => item.gender == gender);
+      }
+    } else {
+      if (gender != '') {
+        returnData = returnData.filter((item) => item.gender == gender);
+      }
+    }
+  }
+
+  return returnData;
+}
+
 // Login
 app.get('/api/login', (req, res) => {
   console.log(req.query, '💙💛 前台登录获取的数据');
@@ -170,10 +201,18 @@ app.post('/api/init/table-data', (req, res) => {
       let reverseData = chunk(JSON.parse(read()), req.body.pageSize)[
         req.body.pageNum - 1
       ];
-
-      console.log(reverseData, `💛💙 获取第 ${req.body.pageNum} 页数据`);
+      const { name, age, gender } = req.body.search;
 
       if (reverseData && reverseData.length > 0) {
+        if (name || age || gender) {
+          return res.send({
+            RESULT_MSG: '💛💙 搜索数据成功',
+            RESULT_CODE: '0000',
+            data: filterAnything(JSON.parse(read()), name, age, gender),
+            total: filterAnything(JSON.parse(read()), name, age, gender).length,
+          });
+        }
+
         res.send({
           RESULT_MSG: '💛💙初始化表格数据成功',
           RESULT_CODE: '0000',
