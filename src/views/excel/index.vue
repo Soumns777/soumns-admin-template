@@ -1,6 +1,13 @@
 <script lang="ts" setup>
 import { ITable, ITableParam, TableList } from '@/libs/types';
-import { initTable, addUser, delUser, editUser } from '@/services/request';
+import {
+  initTable,
+  addUser,
+  delUser,
+  editUser,
+  exportUser,
+  batchAddUser,
+} from '@/services/request';
 import {
   Refresh,
   CirclePlus,
@@ -16,6 +23,8 @@ import {
 import { ElMessage, ElMessageBox } from 'element-plus';
 import EditUser from './components/editUser.vue';
 import { GENDER_TYPE } from '@/libs/constant';
+import { useDownload } from '@/hooks/useDownload';
+import ImportExcel from '@/components/ImportExcel/index.vue';
 // 搜索条件
 let searchParams = $ref<Partial<ITable>>({
   name: '',
@@ -58,15 +67,11 @@ const init = async () => {
   }
 };
 
-onMounted(() => {
-  init();
-});
-
 // 利用ref+defineExpose传递参数给子组件
 interface IEditExpose {
   acceptParams: (params: any) => void;
 }
-let editUserRef: IEditExpose = $ref();
+let editUserExpose: IEditExpose = $ref();
 
 // 编辑用户 (新增、查看、编辑)
 const openDrawer = async (title: string, rowData: Partial<ITable> = {}) => {
@@ -78,7 +83,7 @@ const openDrawer = async (title: string, rowData: Partial<ITable> = {}) => {
     getTableList: init,
   };
 
-  editUserRef.acceptParams(params);
+  editUserExpose.acceptParams(params);
 };
 
 // 删除用户
@@ -138,6 +143,27 @@ const reset = () => {
   searchParams.name = '';
   searchParams.age = '';
   searchParams.gender = '';
+};
+
+// 导出数据
+const download = async () => {
+  useDownload(exportUser, '导出数据用例', tableData);
+};
+
+// 导入数据
+interface ImportExcelExpose {
+  acceptParams: (params: any) => void;
+}
+const importExcelExpose = $ref<ImportExcelExpose>();
+const batchAdd = async () => {
+  let params = {
+    title: '用户',
+    tempUrl: exportUser, // 下载模板的api
+    importUrl: batchAddUser, // 批量导入用户的api
+    getTableList: init, // 操作成功之后刷新数据
+  };
+
+  importExcelExpose!.acceptParams(params);
 };
 </script>
 
@@ -205,13 +231,35 @@ const reset = () => {
       </button>
 
       <button
+        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-pink-500 border-none cursor-pointer"
+        relative
+        m="10px"
+        w="130px"
+        @click="download()"
+      >
+        <Download absolute w="18px" h="18px" left-16px top-8px />
+        导出数据
+      </button>
+
+      <button
+        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-cyan-500 border-none cursor-pointer"
+        relative
+        m="10px"
+        w="130px"
+        @click="batchAdd()"
+      >
+        <Upload absolute w="18px" h="18px" left-16px top-8px />
+        导入数据
+      </button>
+
+      <button
         class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-orange-500 border-none cursor-pointer"
         relative
         m="10px"
         w="130px"
         @click="reset()"
       >
-        <Delete absolute w="18px" h="18px" left-30px top-8px />
+        <Refresh absolute w="18px" h="18px" left-30px top-8px />
         重置
       </button>
     </div>
@@ -309,6 +357,7 @@ const reset = () => {
       @current-change="changePageNum"
     />
 
-    <EditUser ref="editUserRef" />
+    <EditUser ref="editUserExpose" />
+    <ImportExcel ref="importExcelExpose" />
   </div>
 </template>

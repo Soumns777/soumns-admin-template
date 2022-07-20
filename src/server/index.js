@@ -13,6 +13,9 @@ const app = express();
 // 允许跨域资源共享
 const cors = require('cors');
 
+// 生成xlsx的buffer
+const nodeXlsx = require('node-xlsx');
+
 app.use(
   cors({
     credentials: true,
@@ -59,8 +62,8 @@ function write(data) {
 // 数组对象进行排序 按照一个指定的key对数组对象进行排序
 function sortList(propertyName) {
   var datalist = (object1, object2) => {
-    var value1 = object1[propertyName];
-    var value2 = object2[propertyName];
+    var value1 = Number(object1[propertyName]);
+    var value2 = Number(object2[propertyName]);
     if (value1 < value2) {
       return -1;
     } else if (value1 > value2) {
@@ -111,6 +114,42 @@ function filterAnything(aim, name, age, gender) {
   }
 
   return returnData;
+}
+
+// 将json数据转化成blob数据传到前台
+function reverseToBlob(fileName, data, keys) {
+  let sheet = [];
+  if (!!data && data.length > 0) {
+    if (!sheet[fileName]) {
+      sheet[fileName] = { sheet: [], value: [] };
+    }
+    sheet[fileName].sheet = keys;
+
+    let values = []; //用来存储每一行json的数值，
+    data.forEach((item, index) => {
+      values = [];
+      keys.forEach((key) => {
+        values.push(item[key]);
+      });
+      sheet[fileName].value[index] = values;
+    });
+  }
+  sheet[fileName].value.unshift(sheet[fileName].sheet);
+  let fileSheet = sheet[fileName].value;
+  let obj = [{ name: fileName, data: fileSheet }];
+  let file = nodeXlsx.build(obj); //这一步将符合要求的数据拼成buffer
+  return file;
+}
+
+// 将buffer对象转成json对象
+function reverseBufferToJson(buffer) {
+  let newBuffer = Buffer.from(buffer);
+  let jsstr = JSON.stringify(newBuffer);
+  // let jsondata = JSON.parse(jsstr);
+  // let buf = new Buffer(jsondata);
+  // let data = buf.toString();
+  // sx = JSON.parse(data);
+  return jsstr;
 }
 
 // Login
@@ -208,7 +247,10 @@ app.post('/api/init/table-data', (req, res) => {
           return res.send({
             RESULT_MSG: '💛💙 搜索数据成功',
             RESULT_CODE: '0000',
-            data: filterAnything(JSON.parse(read()), name, age, gender),
+            data: chunk(
+              filterAnything(JSON.parse(read()), name, age, gender),
+              req.body.pageSize
+            )[req.body.pageNum - 1],
             total: filterAnything(JSON.parse(read()), name, age, gender).length,
           });
         }
@@ -309,9 +351,63 @@ app.post('/api/edit-user', (req, res) => {
   }
 });
 
+// 导出数据
+app.post('/api/export-user', (req, res) => {
+  try {
+    const { fileName, data, keys } = req.body;
+    let file = reverseToBlob(fileName, data, keys);
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats'); //setHeader一定要写在生成buffer的下面
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=' +
+        ` ${encodeURIComponent(fileName)}_${Date.now()}.xlsx`
+    ); //不能使用中文
+    res.writeHead(200);
+    res.end(file);
+  } catch (err) {
+    return res.status(500).json({ success: false, data: err.message });
+  }
+});
+
+var multer = require('multer');
+const { log } = require('console');
+
+// 批量新增用户
+app.post('/api/import-user', uploadFile, (req, res) => {
+  try {
+    // console.log(fs.readFileSync(req.file.path), '💛💙 batch add user');
+    let buffer = fs.readFileSync(req.file.path);
+    console.log(reverseBufferToJson(buffer), '💛💙 解析json数据');
+
+    res.send({
+      RESULT_MSG: '💛💙导入成功',
+      RESULT_CODE: '0000',
+    });
+  } catch (err) {
+    return res.status(500).json({ success: false, data: err.message });
+  }
+});
+
+// 自定义中间件
+function uploadFile(req, res, next) {
+  //dest 值为文件存储的路径;single方法,表示上传单个文件,参数为表单数据对应的key
+  let upload = multer({ dest: 'upload/' }).single('file');
+  upload(req, res, (err) => {
+    //打印结果看下面的截图
+    if (err) {
+      res.send('err:' + err);
+    } else {
+      //将文件信息赋值到req.body中，继续执行下一步
+      req.body.file = req.file.filename;
+      next();
+    }
+  });
+}
+
 // upload image
 app.post('/api/upload-images', (req, res) => {
-  console.log(req.body, '💛💙 上传图片');
+  console.log(req, '💛💙 上传图片');
 
   res.send({
     RESULT_MSG: '上传成功',

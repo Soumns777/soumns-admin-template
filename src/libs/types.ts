@@ -11,8 +11,8 @@ export interface Result {
 /**
  * @desc 请求响应参数(包含data)
  */
-export interface ResultData extends Result {
-  data: TableList;
+export interface ResultData<T = any> extends Result {
+  data: T;
   total: number;
 }
 
@@ -75,3 +75,9 @@ export interface ITable {
 }
 
 export type TableList = ITable[];
+
+export interface IImportUserParams {
+  data: Partial<TableList>;
+  fileName: string;
+  keys: Array<string>;
+}

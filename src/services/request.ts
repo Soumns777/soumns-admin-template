@@ -1,6 +1,14 @@
+import { FORM_DATA_HEADER } from '@/libs/constant';
 import RequestHttp from '@/libs/http';
 
-import { ILogin, LoginRes, ITableParam, TableList, ITable } from '@/libs/types';
+import {
+  ILogin,
+  LoginRes,
+  ITableParam,
+  TableList,
+  ITable,
+  IImportUserParams,
+} from '@/libs/types';
 
 // * 用户登录接口
 export const login = (params: ILogin) => {
@@ -25,4 +33,16 @@ export const delUser = (params: Partial<ITable>) => {
 // * 编辑用户
 export const editUser = (params: Partial<ITable>) => {
   return RequestHttp.post('/api/edit-user', params);
+};
+
+// * 导出表格数据
+export const exportUser = (params: IImportUserParams) => {
+  return RequestHttp.post<BlobPart>(`/api/export-user`, params, {
+    responseType: 'blob',
+  });
+};
+
+// * 批量添加用户
+export const batchAddUser = (params: FormData) => {
+  return RequestHttp.post(`/api/import-user`, params, FORM_DATA_HEADER);
 };
