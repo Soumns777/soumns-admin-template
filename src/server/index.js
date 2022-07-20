@@ -141,17 +141,6 @@ function reverseToBlob(fileName, data, keys) {
   return file;
 }
 
-// 将buffer对象转成json对象
-function reverseBufferToJson(buffer) {
-  let newBuffer = Buffer.from(buffer);
-  let jsstr = JSON.stringify(newBuffer);
-  // let jsondata = JSON.parse(jsstr);
-  // let buf = new Buffer(jsondata);
-  // let data = buf.toString();
-  // sx = JSON.parse(data);
-  return jsstr;
-}
-
 // Login
 app.get('/api/login', (req, res) => {
   console.log(req.query, '💙💛 前台登录获取的数据');
@@ -287,7 +276,7 @@ app.post('/api/init/table-data', (req, res) => {
 app.post('/api/add-user', (req, res) => {
   let reverseData = JSON.parse(read());
   reverseData.push(
-    Object.assign({ id: reverseData[reverseData.length - 1].id }, req.body)
+    Object.assign(req.body, { id: reverseData[reverseData.length - 1].id })
   );
   write(reverseData);
   res.send({
@@ -355,7 +344,7 @@ app.post('/api/edit-user', (req, res) => {
 app.post('/api/export-user', (req, res) => {
   try {
     const { fileName, data, keys } = req.body;
-    let file = reverseToBlob(fileName, data, keys);
+    let file = reverseToBlob(fileName, JSON.parse(read()), keys);
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats'); //setHeader一定要写在生成buffer的下面
     res.setHeader(
@@ -371,14 +360,12 @@ app.post('/api/export-user', (req, res) => {
 });
 
 var multer = require('multer');
-const { log } = require('console');
 
 // 批量新增用户
 app.post('/api/import-user', uploadFile, (req, res) => {
   try {
-    // console.log(fs.readFileSync(req.file.path), '💛💙 batch add user');
     let buffer = fs.readFileSync(req.file.path);
-    console.log(reverseBufferToJson(buffer), '💛💙 解析json数据');
+    console.log(buffer.toJSON(), '💛💙 解析json数据');
 
     res.send({
       RESULT_MSG: '💛💙导入成功',
