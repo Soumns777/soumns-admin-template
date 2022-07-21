@@ -204,6 +204,19 @@ const batchAdd = async () => {
             clearable
           ></el-input>
         </el-form-item>
+
+        <el-form-item>
+          <button
+            class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none cursor-pointer"
+            relative
+            m="l20px"
+            w="50px"
+            h="30px"
+            @click="search()"
+          >
+            <Search absolute w="18px" h="18px" left-17px top-6px />
+          </button>
+        </el-form-item>
       </el-form>
     </div>
 
@@ -217,17 +230,6 @@ const batchAdd = async () => {
       >
         <CirclePlus absolute w="18px" h="18px" left-16px top-8px />
         新增用户
-      </button>
-
-      <button
-        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none cursor-pointer"
-        relative
-        m="10px"
-        w="130px"
-        @click="search()"
-      >
-        <Search absolute w="18px" h="18px" left-30px top-8px />
-        搜索
       </button>
 
       <button
@@ -361,3 +363,9 @@ const batchAdd = async () => {
     <ImportExcel ref="importExcelExpose" />
   </div>
 </template>
+
+<style lang="scss" scoped>
+:deep(.el-form--inline .el-form-item) {
+  margin-right: 0;
+}
+</style>

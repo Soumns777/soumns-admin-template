@@ -276,8 +276,11 @@ app.post('/api/init/table-data', (req, res) => {
 app.post('/api/add-user', (req, res) => {
   let reverseData = JSON.parse(read());
   reverseData.push(
-    Object.assign(req.body, { id: reverseData[reverseData.length - 1].id })
+    Object.assign(req.body, {
+      id: (Number(reverseData[reverseData.length - 1].id) + 1).toString(),
+    })
   );
+
   write(reverseData);
   res.send({
     RESULT_MSG: '新增用户成功',
@@ -364,9 +367,54 @@ var multer = require('multer');
 // 批量新增用户
 app.post('/api/import-user', uploadFile, (req, res) => {
   try {
-    let buffer = fs.readFileSync(req.file.path);
-    console.log(buffer.toJSON(), '💛💙 解析json数据');
+    var file = req.file;
+    //以下代码得到文件后缀
+    name = file.originalname;
+    nameArray = name.split('');
+    var nameMime = [];
+    l = nameArray.pop();
+    nameMime.unshift(l);
+    while (nameArray.length != 0 && l != '.') {
+      l = nameArray.pop();
+      nameMime.unshift(l);
+    }
+    //Mime是文件的后缀
+    Mime = nameMime.join('');
 
+    //重命名文件 加上文件后缀
+    fs.renameSync(
+      './upload/' + file.filename,
+      './upload/' + file.filename + Mime
+    );
+
+    let filepath = './upload/' + file.filename + Mime;
+
+    var list = nodeXlsx.parse(filepath);
+
+    // console.log(list[0].data, '💛💙 读取表格数据');
+
+    let sheetData = list[0].data;
+    // 建立空数组，用于放置数据
+    let testList = [];
+    // testTitle也是个数组，用于读取标题行
+    let testTitle = sheetData[0];
+    // console.log(testTitle) // 表头
+
+    sheetData.forEach((item, index) => {
+      //整一个新对象
+      var NewVot = {};
+      if (index == 0) {
+        return;
+      } else {
+        for (var i = 0; i < testTitle.length; i++) {
+          NewVot[testTitle[i]] = item[i];
+        }
+        testList.push(NewVot);
+      }
+    });
+
+    let reverseData = [...JSON.parse(read()), ...testList];
+    write(reverseData);
     res.send({
       RESULT_MSG: '💛💙导入成功',
       RESULT_CODE: '0000',
