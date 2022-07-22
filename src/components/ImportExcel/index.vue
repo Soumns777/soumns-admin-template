@@ -84,6 +84,7 @@ const uploadExcel = async (param: any) => {
 
   const res = parameter.importUrl && (await parameter.importUrl(excelFormData));
 
+  console.log(res, '💛💙 res');
   if (res.RESULT_CODE !== '0000') return param.onError();
   parameter.getTableList && parameter.getTableList();
   dialogVisible = false;

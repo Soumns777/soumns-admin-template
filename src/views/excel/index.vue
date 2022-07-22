@@ -7,6 +7,7 @@ import {
   editUser,
   exportUser,
   batchAddUser,
+  testCancel,
 } from '@/services/request';
 import {
   Refresh,
@@ -25,6 +26,7 @@ import EditUser from './components/editUser.vue';
 import { GENDER_TYPE } from '@/libs/constant';
 import { useDownload } from '@/hooks/useDownload';
 import ImportExcel from '@/components/ImportExcel/index.vue';
+import { zhCn } from 'element-plus/es/locale';
 // 搜索条件
 let searchParams = $ref<Partial<ITable>>({
   name: '',
@@ -49,7 +51,8 @@ const tableParams = reactive<ITableParam>({
 });
 
 const init = async () => {
-  console.log(tableParams, '💛💙 init tableParams');
+  console.log(tableParams, '💛💙 init table params');
+
   const {
     data: res,
     RESULT_CODE,
@@ -121,8 +124,10 @@ const changePageNum = (pageNum: number) => {
 };
 
 // 搜素
-const search = () => {
+const searchIt = () => {
   const { name, age, gender } = toRefs(searchParams);
+
+  console.log(name, age, gender, '💛💙 测试');
 
   if (!(name?.value || age?.value || gender?.value)) {
     return ElMessage.warning('请先选择一个搜索项再进行搜索!');
@@ -132,17 +137,23 @@ const search = () => {
 };
 
 // 检测搜索条件,没有筛选条件重置表格数据
-watchEffect(() => {
-  const { name, age, gender } = toRefs(searchParams);
-  if (!(name.value || age?.value || gender?.value)) {
-    init();
-  }
+// watchEffect(() => {
+//   const { name, age, gender } = toRefs(searchParams);
+//   if (!(name.value || age?.value || gender?.value)) {
+//     init();
+//   }
+// });
+
+onMounted(() => {
+  init();
 });
+
 // 重置
 const reset = () => {
   searchParams.name = '';
   searchParams.age = '';
   searchParams.gender = '';
+  init();
 };
 
 // 导出数据
@@ -164,6 +175,16 @@ const batchAdd = async () => {
   };
 
   importExcelExpose!.acceptParams(params);
+};
+
+// 测试cacel token
+const test = async () => {
+  console.log(tableParams, '💛💙 tableParams');
+  // const res = await testCancel(tableParams);
+  // const res = await initTable(tableParams);
+  init();
+
+  // console.log(res, '💛💙 test cancel');s
 };
 </script>
 
@@ -205,19 +226,30 @@ const batchAdd = async () => {
           ></el-input>
         </el-form-item>
 
-        <el-form-item>
-          <button
+        <!-- <el-form-item>
+           <button
             class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none cursor-pointer"
             relative
             m="l20px"
             w="50px"
             h="30px"
-            @click="search()"
+            @click="init()"
           >
             <Search absolute w="18px" h="18px" left-17px top-6px />
-          </button>
-        </el-form-item>
+          </button> 
+        </el-form-item> -->
       </el-form>
+
+      <button
+        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none cursor-pointer"
+        relative
+        m="l20px b-20px"
+        w="50px"
+        h="30px"
+        @click="init()"
+      >
+        <Search absolute w="18px" h="18px" left-17px top-6px />
+      </button>
     </div>
 
     <div flex items-center m="t10px b20px l20px">
@@ -263,6 +295,17 @@ const batchAdd = async () => {
       >
         <Refresh absolute w="18px" h="18px" left-30px top-8px />
         重置
+      </button>
+
+      <button
+        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-pink-500 border-none cursor-pointer"
+        relative
+        m="10px"
+        w="130px"
+        @click="init()"
+      >
+        <Refresh absolute w="18px" h="18px" left-30px top-8px />
+        Test
       </button>
     </div>
 

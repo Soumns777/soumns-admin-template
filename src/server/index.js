@@ -224,6 +224,7 @@ app.get('/api/login', (req, res) => {
 
 // Init TableData
 app.post('/api/init/table-data', (req, res) => {
+  console.log(req.body, '💛💙 search init table params');
   if (req.body.uName) {
     if (req.body.uName === 'admin') {
       let reverseData = chunk(JSON.parse(read()), req.body.pageSize)[
@@ -446,6 +447,16 @@ app.post('/api/upload-images', (req, res) => {
 
   res.send({
     RESULT_MSG: '上传成功',
+    RESULT_CODE: '0000',
+  });
+});
+
+// mock 数据
+app.post('/api/mock', (req, res) => {
+  console.log(req.body, '💛💙 mock data');
+
+  res.send({
+    RESULT_MSG: '测试cancelToken成功',
     RESULT_CODE: '0000',
   });
 });

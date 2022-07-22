@@ -46,3 +46,8 @@ export const exportUser = (params: IImportUserParams) => {
 export const batchAddUser = (params: FormData) => {
   return RequestHttp.post(`/api/import-user`, params, FORM_DATA_HEADER);
 };
+
+// * 批量添加用户
+export const testCancel = (params: any) => {
+  return RequestHttp.post(`/api/mock`, params);
+};

@@ -57,7 +57,7 @@ export interface ITableParam {
   uName: string;
   pageNum?: Ref;
   pageSize?: Ref;
-  search: {
+  search?: {
     name?: string;
     gender?: string;
     age?: number | string;

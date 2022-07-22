@@ -53,6 +53,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           password: md5(ruleForm.password),
         });
 
+        console.log(RESULT_CODE, RESULT_MSG, '💛💙 登录成功');
+
         if (RESULT_CODE === '0000') {
           authStore.setAuthToken(data.access_token);
           authStore.setAuthRoutes(generateRoute(formatTree(data.routeList)));
