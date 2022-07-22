@@ -226,21 +226,22 @@ const test = async () => {
           ></el-input>
         </el-form-item>
 
-        <!-- <el-form-item>
-           <button
+        <el-form-item>
+          <button
             class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none cursor-pointer"
             relative
+            type="button"
             m="l20px"
             w="50px"
             h="30px"
             @click="init()"
           >
             <Search absolute w="18px" h="18px" left-17px top-6px />
-          </button> 
-        </el-form-item> -->
+          </button>
+        </el-form-item>
       </el-form>
 
-      <button
+      <!-- <button
         class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none cursor-pointer"
         relative
         m="l20px b-20px"
@@ -249,7 +250,7 @@ const test = async () => {
         @click="init()"
       >
         <Search absolute w="18px" h="18px" left-17px top-6px />
-      </button>
+      </button> -->
     </div>
 
     <div flex items-center m="t10px b20px l20px">
