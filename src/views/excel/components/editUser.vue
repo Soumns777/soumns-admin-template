@@ -80,7 +80,7 @@ import { formatCompleteDate } from '@/libs/formateDate';
 const rules = reactive<FormRules>({
   name: [
     { required: true, message: '请填写用户姓名', trigger: 'blur' },
-    { min: 2, max: 5, message: '用户姓名长度需要在3-5之间', trigger: 'blur' },
+    // { min: 2, max: 5, message: '用户姓名长度需要在3-5之间', trigger: 'blur' },
   ],
   gender: [{ required: true, message: '请选择性别', trigger: 'change' }],
   age: [{ required: true, message: '请填写年龄', trigger: 'blur' }],

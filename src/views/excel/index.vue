@@ -37,7 +37,7 @@ let searchParams = $ref<Partial<ITable>>({
 // 分页
 let pageAble = reactive({
   pageNum: 1, // 当前页页数
-  pageSize: 6, // 每页显示条数
+  pageSize: 7, // 每页显示条数
   total: 0, // 总条数
 });
 
@@ -144,10 +144,6 @@ const searchIt = () => {
 //   }
 // });
 
-onMounted(() => {
-  init();
-});
-
 // 重置
 const reset = () => {
   searchParams.name = '';
@@ -177,15 +173,19 @@ const batchAdd = async () => {
   importExcelExpose!.acceptParams(params);
 };
 
-// 测试cacel token
-const test = async () => {
-  console.log(tableParams, '💛💙 tableParams');
-  // const res = await testCancel(tableParams);
-  // const res = await initTable(tableParams);
-  init();
-
-  // console.log(res, '💛💙 test cancel');s
+// 编辑表格
+const selectionChange = (rowArr: TableList) => {
+  console.log(rowArr, '💛💙 selectionChange');
 };
+
+// 跨页面选择时需要
+const getRowKeys = (row: ITable) => {
+  return row.id;
+};
+
+onMounted(() => {
+  init();
+});
 </script>
 
 <template>
@@ -240,17 +240,6 @@ const test = async () => {
           </button>
         </el-form-item>
       </el-form>
-
-      <!-- <button
-        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none cursor-pointer"
-        relative
-        m="l20px b-20px"
-        w="50px"
-        h="30px"
-        @click="init()"
-      >
-        <Search absolute w="18px" h="18px" left-17px top-6px />
-      </button> -->
     </div>
 
     <div flex items-center m="t10px b20px l20px">
@@ -297,20 +286,16 @@ const test = async () => {
         <Refresh absolute w="18px" h="18px" left-30px top-8px />
         重置
       </button>
-
-      <button
-        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-pink-500 border-none cursor-pointer"
-        relative
-        m="10px"
-        w="130px"
-        @click="init()"
-      >
-        <Refresh absolute w="18px" h="18px" left-30px top-8px />
-        Test
-      </button>
     </div>
 
-    <el-table :data="tableData" height="575" :border="true" style="width: 100%">
+    <el-table
+      :data="tableData"
+      height="575"
+      :border="true"
+      style="width: 100%"
+      @selection-change="selectionChange"
+      :row-key="getRowKeys"
+    >
       <el-table-column type="selection" width="55" />
 
       <el-table-column
@@ -395,7 +380,7 @@ const test = async () => {
     <el-pagination
       v-model:currentPage="pageAble.pageNum"
       v-model:page-size="pageAble.pageSize"
-      :page-sizes="[3, 4, 5, 6]"
+      :page-sizes="[3, 4, 5, 6, 7]"
       background
       layout="total, sizes, prev, pager, next, jumper"
       :total="pageAble.total"

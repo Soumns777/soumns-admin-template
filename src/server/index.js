@@ -234,6 +234,10 @@ app.post('/api/init/table-data', (req, res) => {
 
       if (reverseData && reverseData.length > 0) {
         if (name || age || gender) {
+          console.log(
+            filterAnything(JSON.parse(read()), name, age, gender).length,
+            '💛💙 search total'
+          );
           return res.send({
             RESULT_MSG: '💛💙 搜索数据成功',
             RESULT_CODE: '0000',
@@ -245,6 +249,7 @@ app.post('/api/init/table-data', (req, res) => {
           });
         }
 
+        console.log(JSON.parse(read()).length, '💛💙 init total');
         res.send({
           RESULT_MSG: '💛💙初始化表格数据成功',
           RESULT_CODE: '0000',
