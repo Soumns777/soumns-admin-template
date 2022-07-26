@@ -228,7 +228,7 @@ onMounted(() => {
 
         <el-form-item>
           <button
-            class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none cursor-pointer"
+            class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none"
             relative
             type="button"
             m="l20px"

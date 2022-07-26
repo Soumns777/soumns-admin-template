@@ -23,7 +23,7 @@ const axiosCanceler = new AxiosCanceler();
 
 const config = {
   // 默认地址
-  baseURL: 'http://localhost:3001',
+  baseURL: 'http://localhost:3000',
   // 设置超时时间（10s）
   timeout: ResultEnum.TIMEOUT as number,
   // 跨域时候允许携带凭证(需要后台配置)
