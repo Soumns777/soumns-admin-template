@@ -7,7 +7,6 @@ import {
   editUser,
   exportUser,
   batchAddUser,
-  testCancel,
 } from '@/services/request';
 import {
   Refresh,
@@ -26,7 +25,9 @@ import EditUser from './components/editUser.vue';
 import { GENDER_TYPE } from '@/libs/constant';
 import { useDownload } from '@/hooks/useDownload';
 import ImportExcel from '@/components/ImportExcel/index.vue';
-import { zhCn } from 'element-plus/es/locale';
+import SearchForm from '@/components/searchForm/index.vue';
+import SoumnsTable from '@/components/SoumnsTable/index.vue';
+
 // 搜索条件
 let searchParams = $ref<Partial<ITable>>({
   name: '',
@@ -112,6 +113,30 @@ const del = (rowData: ITable) => {
     });
 };
 
+// 批量删除
+const batchDel = async (rowData: any[]) => {
+  console.log(rowData, '💛💙 rowData');
+  ElMessageBox.confirm('您确定要删除当前用户吗?', '友情提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+    .then(async () => {
+      const { RESULT_CODE, RESULT_MSG } = await delUser(rowData);
+
+      if (RESULT_CODE != '0000') {
+        return ElMessage.error(RESULT_MSG);
+      }
+
+      ElMessage.success(RESULT_MSG);
+      console.log(RESULT_CODE, RESULT_MSG, '💛💙 批量删除返回数据');
+      init();
+    })
+    .catch(() => {
+      console.log('💛💙 取消批量删除用户');
+    });
+};
+
 // 分页
 const changePageSize = (pageSize: number) => {
   pageAble.pageSize = pageSize;
@@ -174,8 +199,11 @@ const batchAdd = async () => {
 };
 
 // 编辑表格
+let multiSselects = $ref<TableList>([]);
+
 const selectionChange = (rowArr: TableList) => {
-  console.log(rowArr, '💛💙 selectionChange');
+  multiSselects = rowArr;
+  console.log(multiSselects, '💛💙 selectionChange');
 };
 
 // 跨页面选择时需要
@@ -186,62 +214,30 @@ const getRowKeys = (row: ITable) => {
 onMounted(() => {
   init();
 });
+
+// 测试循环取数据
+const testMap = async () => {
+  let idx = 4;
+
+  for (let i = 0; i < idx; i++) {
+    init();
+  }
+};
 </script>
 
 <template>
   <div class="table-box">
-    <div flex items-center m="t10px l20px">
-      <el-form
-        ref="formRef"
-        :model="searchParams"
-        :inline="true"
-        label-width="100px"
-      >
-        <el-form-item label="用户姓名 :">
-          <el-input
-            v-model="searchParams.name"
-            placeholder="请输入用户姓名"
-            clearable
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="性别 :">
-          <el-select
-            v-model="searchParams.gender"
-            placeholder="请选择性别"
-            clearable
-          >
-            <el-option
-              v-for="item in GENDER_TYPE"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="年龄 :">
-          <el-input
-            v-model="searchParams.age"
-            placeholder="请输入年龄"
-            clearable
-          ></el-input>
-        </el-form-item>
+    <!-- 搜搜表单部分 -->
+    <SearchForm
+      :searchParams="searchParams"
+      :GENDER_TYPE="GENDER_TYPE"
+      :init="init"
+      flex
+      items-center
+      m="t10px l20px"
+    />
 
-        <el-form-item>
-          <button
-            class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-green-500 border-none"
-            relative
-            type="button"
-            m="l20px"
-            w="50px"
-            h="30px"
-            @click="init()"
-          >
-            <Search absolute w="18px" h="18px" left-17px top-6px />
-          </button>
-        </el-form-item>
-      </el-form>
-    </div>
-
+    <!-- 操作按钮部分 -->
     <div flex items-center m="t10px b20px l20px">
       <button
         class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-blue-500 border-none cursor-pointer"
@@ -286,8 +282,20 @@ onMounted(() => {
         <Refresh absolute w="18px" h="18px" left-30px top-8px />
         重置
       </button>
+
+      <button
+        class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-red-500 border-none cursor-pointer"
+        relative
+        m="10px"
+        w="130px"
+        @click="batchDel(multiSselects)"
+      >
+        <Delete absolute w="18px" h="18px" left-16px top-8px />
+        批量删除
+      </button>
     </div>
 
+    <!-- 表格部分 -->
     <el-table
       :data="tableData"
       height="575"
@@ -377,6 +385,7 @@ onMounted(() => {
       </template>
     </el-table>
 
+    <!-- 分页 -->
     <el-pagination
       v-model:currentPage="pageAble.pageNum"
       v-model:page-size="pageAble.pageSize"

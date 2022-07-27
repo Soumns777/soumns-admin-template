@@ -35,6 +35,8 @@ declare module '@vue/runtime-core' {
     ImportExcel: typeof import('./components/ImportExcel/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchForm: typeof import('./components/searchForm/index.vue')['default']
+    SoumnsTable: typeof import('./components/SoumnsTable/index.vue')['default']
     SwitchDark: typeof import('./components/switchDark/index.vue')['default']
   }
 }

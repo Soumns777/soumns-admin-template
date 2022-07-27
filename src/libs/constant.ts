@@ -1,4 +1,6 @@
-export const GENDER_TYPE = [
+import { IGenderType } from './types';
+
+export const GENDER_TYPE: IGenderType[] = [
   { label: '男', value: 'male' },
   { label: '女', value: 'female' },
 ];

@@ -81,3 +81,8 @@ export interface IImportUserParams {
   fileName: string;
   keys: Array<string>;
 }
+
+export interface IGenderType {
+  label: string;
+  value: string;
+}
