@@ -86,3 +86,9 @@ export interface IGenderType {
   label: string;
   value: string;
 }
+
+export interface IPage {
+  pageNum: number;
+  pageSize: number;
+  total: number;
+}
