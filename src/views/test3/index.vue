@@ -1,4 +1,4 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup name="test3"></script>
 
 <template>
   <div class="container">test3</div>

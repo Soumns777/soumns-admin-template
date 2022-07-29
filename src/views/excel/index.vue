@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup name=""excel"">
 import { IPage, ITable, ITableParam, TableList } from '@/libs/types';
 import { initTable, delUser } from '@/services/request';
 import { ElMessage, ElMessageBox } from 'element-plus';

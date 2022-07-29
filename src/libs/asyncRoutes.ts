@@ -53,6 +53,7 @@ export function generateRoute(userRoutes: Menu.MenuList) {
       meta: {
         title: r.title,
         icon: r.icon,
+        keepAlive: r.keepAlive,
       },
     };
 
@@ -138,7 +139,10 @@ export function clearDynamicRoutes(
     },
     {},
     {
-      setAuthToken(authToken: string): void;
+      setAuthToken(
+        authToken: string
+        // 将第一层和其他层的数据结构分开,然后再将其他层的数据筛选出放入其父级结构中
+      ): void;
       setAuthRoutes(authRoutes: Menu.RoutesList): void;
       clearAuthToken(): void;
       clearAuthRoutes(): void;

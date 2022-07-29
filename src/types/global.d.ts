@@ -7,6 +7,7 @@ declare namespace Menu {
     path: string;
     name: string;
     title: string;
+    keepAlive?: boolean;
     children?: IMenuOptions[];
   }
 
@@ -16,6 +17,7 @@ declare namespace Menu {
     title: string;
     icon?: string;
     requireAuth?: boolean;
+    keepAlive?: boolean;
   }
 
   interface IRoutes {

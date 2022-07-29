@@ -1,7 +1,8 @@
-<script lang="ts" setup>
+<script lang="ts" setup name="layout">
 import store from '@/store/index';
 import { ArrowRight } from '@element-plus/icons-vue';
 import { InjectionKey, Ref } from 'vue';
+import cacheRouter from '@/hooks/useCache';
 import {
   RouteLocationMatched,
   RouteLocationRaw,
@@ -46,10 +47,13 @@ watch(
 const removeTab = (activeTabPath: any) => {
   tabStore.removeTab(activeTabPath);
 };
+
+const layout = $ref('layout');
 </script>
 
 <template>
   <div min-h-screen>
+    <el-input v-model="layout"></el-input>
     <el-container>
       <el-aside width="200px" h="100%">
         <div
@@ -165,21 +169,6 @@ const removeTab = (activeTabPath: any) => {
                   {{ item.title }}
                 </template>
               </el-tab-pane>
-
-              <!-- <button @click="tabStore.removeAllTabs()">清空</button>
-              <button
-                @click="
-                  tabStore.addTabs({
-                    name: 'home',
-                    path: '/home',
-                    title: '首页',
-                    close: false,
-                    icon: 'home-filled',
-                  })
-                "
-              >
-                初始化
-              </button> -->
             </el-tabs>
           </div>
         </el-header>
@@ -191,8 +180,15 @@ const removeTab = (activeTabPath: any) => {
           relative
         >
           <!-- class="h-[calc(100%-10px)]]" -->
-
-          <router-view bg="#fff" w="100%" h="94%" />
+          <!-- <router-view bg="#fff" w="100%" h="94%" /> -->
+          <!-- 动态过渡+keepAlive -->
+          <router-view v-slot="{ Component, route }" bg="#fff" w="100%" h="94%">
+            <transition name="fade-transform">
+              <keep-alive :include="cacheRouter">
+                <component :is="Component" :key="route.path" />
+              </keep-alive>
+            </transition>
+          </router-view>
 
           <div
             w="100%"

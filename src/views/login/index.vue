@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup name="login">
 import type { FormInstance, FormRules } from 'element-plus';
 import SwitchDark from '@/components/switchDark/index.vue';
 import { User, Lock, CircleClose, UserFilled } from '@element-plus/icons-vue';
@@ -14,7 +14,6 @@ import {
 
 import store from '@/store/index';
 const authStore = store().Auth;
-
 const router = useRouter();
 let loading = $ref(false);
 

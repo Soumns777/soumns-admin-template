@@ -8,14 +8,13 @@ import {
   createWebHistory,
   createWebHashHistory,
   RouteRecordRaw,
-  RouteRecordName,
 } from 'vue-router';
 
 import { ElMessage } from 'element-plus';
 import store from '@/store/index';
 
 // 创建路由表
-const routes: RouteRecordRaw[] = [
+export const routes: RouteRecordRaw[] = [
   {
     path: '/',
     redirect: { name: 'login' },
@@ -23,12 +22,18 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
+    meta: {
+      keepAlive: true,
+    },
     component: () => import('@/views/login/index.vue'),
   },
 
   {
     path: '/layout',
     name: 'layout',
+    // meta: {
+    //   keepAlive: true,
+    // },
     component: () => import('@/views/layout/index.vue'),
     redirect: HOME_URL,
   },
@@ -36,6 +41,9 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/dataScreen',
     name: 'dataScreen',
+    meta: {
+      keepAlive: true,
+    },
     component: () => import('@/views/dataScreen/index.vue'),
   },
 ];

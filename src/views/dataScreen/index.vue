@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script lang="ts" setup name="dataScreen">
 import type { Ref } from 'vue';
 import { bgColorKey, IBgcolor } from '@/types/provideKey';
 import Father from './father.vue';
@@ -42,33 +42,55 @@ const getRef = () => {
 getRef();
 
 const show = $ref(true);
+
+const dataScreen = $ref('dataScreen');
 </script>
 
 <template>
-  <div class="box" w="100%" h="20px">数据大屏</div>
+  <div>
+    <el-input v-model="dataScreen"></el-input>
 
-  <button
-    class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-pink-500 border-none cursor-pointer"
-    m="10px"
-    @click="father.changeExpose('777')"
-  >
-    change-ref
-  </button>
-  <Father v-model:bgColor="bgColor" v-model:test="test" ref="father" />
+    <div class="box" w="100%" h="20px">数据大屏</div>
 
-  <Transition name="fade-transform">
-    <p v-if="show" style="text-align: center">
-      Hello here is some bouncy text!
-    </p>
-  </Transition>
+    <button
+      bg-blue-500
+      color="#fff"
+      p="y8px x15px"
+      m="l10px"
+      font-semibold
+      rounded-lg
+      shadow-md
+      border-none
+      cursor-pointer
+      text="center"
+      @click="$router.push({ name: 'layout' })"
+    >
+      前往layout
+    </button>
 
-  <button
-    class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-purple-500 border-none cursor-pointer"
-    m="10px"
-    @click="show = !show"
-  >
-    change-show
-  </button>
+    <button
+      class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-pink-500 border-none cursor-pointer"
+      m="10px"
+      @click="father.changeExpose('777')"
+    >
+      change-ref
+    </button>
+    <Father v-model:bgColor="bgColor" v-model:test="test" ref="father" />
+
+    <Transition name="fade-transform">
+      <p v-if="show" style="text-align: center">
+        Hello here is some bouncy text!
+      </p>
+    </Transition>
+
+    <button
+      class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-purple-500 border-none cursor-pointer"
+      m="10px"
+      @click="show = !show"
+    >
+      change-show
+    </button>
+  </div>
 </template>
 
 <style scoped lang="scss">

@@ -46,7 +46,6 @@
 import { useDownload } from '@/hooks/useDownload';
 import { Download } from '@element-plus/icons-vue';
 import { ElNotification } from 'element-plus';
-import { zhCn } from 'element-plus/es/locale';
 
 export interface ExcelParameterProps {
   title: string; // 标题

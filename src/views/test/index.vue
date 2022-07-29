@@ -1,8 +1,18 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup name="test">
+import cacheRouter from '@/hooks/useCache';
+</script>
 
 <template>
   <div class="container">
-    <router-view />
+    <!-- <el-input v-model="test">111</el-input> -->
+
+    <router-view v-slot="{ Component, route }">
+      <transition name="fade-transform">
+        <keep-alive :include="cacheRouter">
+          <component :is="Component" :key="route.path" />
+        </keep-alive>
+      </transition>
+    </router-view>
   </div>
 </template>
 
