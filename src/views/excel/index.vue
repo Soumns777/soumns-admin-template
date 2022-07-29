@@ -1,14 +1,6 @@
 <script lang="ts" setup>
 import { IPage, ITable, ITableParam, TableList } from '@/libs/types';
-import {
-  initTable,
-  addUser,
-  delUser,
-  editUser,
-  exportUser,
-  batchAddUser,
-} from '@/services/request';
-
+import { initTable, delUser } from '@/services/request';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import SoumnsTable from '@/components/SoumnsTable/index.vue';
 
@@ -56,7 +48,10 @@ const init = async () => {
 
 // 批量删除
 const batchDel = async (rowData: any[]) => {
-  console.log(rowData, '💛💙 rowData');
+  if (!rowData.length) {
+    return ElMessage.warning('请选选择需要删除的项!');
+  }
+
   ElMessageBox.confirm('您确定要删除当前用户吗?', '友情提示', {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
@@ -91,14 +86,18 @@ const batchDel = async (rowData: any[]) => {
       <!-- 操作按钮部分 -->
       <template #operation="{ multiSselects }">
         <button
-          class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-red-500 border-none cursor-pointer"
+          class="font-semibold rounded-lg shadow-md text-white bg-red-500 border-none cursor-pointer"
           relative
           m="10px"
-          w="130px"
           @click="batchDel(multiSselects)"
+          p="y8px x15px"
+          text="center"
         >
-          <Delete absolute w="18px" h="18px" left-16px top-8px />
-          批量删除
+          <i m="r24px">
+            <Delete absolute w="18px" h="18px" left-16px top-8px />
+          </i>
+
+          <span>批量删除</span>
         </button>
       </template>
     </SoumnsTable>

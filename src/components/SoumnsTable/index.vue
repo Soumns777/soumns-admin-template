@@ -13,8 +13,6 @@ import {
   Download,
   Upload,
   View,
-  ArrowDown,
-  ArrowUp,
 } from '@element-plus/icons-vue';
 import {
   addUser,
@@ -24,6 +22,8 @@ import {
   batchAddUser,
 } from '@/services/request';
 import { useDownload } from '@/hooks/useDownload';
+
+// defineProps
 interface ISearchFormProps {
   searchParams: Partial<ITable>;
   init: () => Promise<MessageHandle | undefined>;
@@ -197,7 +197,9 @@ onMounted(() => {
           h="30px"
           @click="searchIt()"
         >
-          <Search absolute w="18px" h="18px" left-17px top-6px />
+          <i m="r24px">
+            <Search absolute w="18px" h="18px" left-17px top-6px />
+          </i>
         </button>
       </el-form-item>
     </el-form>
@@ -208,10 +210,12 @@ onMounted(() => {
         class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-blue-500 border-none cursor-pointer"
         relative
         m="10px"
-        w="130px"
         @click="openDrawer('新增')"
       >
-        <CirclePlus absolute w="18px" h="18px" left-16px top-8px />
+        <i m="r24px">
+          <CirclePlus absolute w="18px" h="18px" left-16px top-8px />
+        </i>
+
         新增用户
       </button>
 
@@ -219,10 +223,12 @@ onMounted(() => {
         class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-pink-500 border-none cursor-pointer"
         relative
         m="10px"
-        w="130px"
         @click="download()"
       >
-        <Download absolute w="18px" h="18px" left-16px top-8px />
+        <i m="r24px">
+          <Download absolute w="18px" h="18px" left-16px top-8px />
+        </i>
+
         导出数据
       </button>
 
@@ -230,10 +236,12 @@ onMounted(() => {
         class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-cyan-500 border-none cursor-pointer"
         relative
         m="10px"
-        w="130px"
         @click="batchAdd()"
       >
-        <Upload absolute w="18px" h="18px" left-16px top-8px />
+        <i m="r24px">
+          <Upload absolute w="18px" h="18px" left-16px top-8px />
+        </i>
+
         导入数据
       </button>
 
@@ -241,14 +249,15 @@ onMounted(() => {
         class="py-2 px-4 font-semibold rounded-lg shadow-md text-white bg-orange-500 border-none cursor-pointer"
         relative
         m="10px"
-        w="130px"
         @click="reset()"
       >
-        <Refresh absolute w="18px" h="18px" left-30px top-8px />
+        <i m="r24px">
+          <Refresh absolute w="18px" h="18px" left-18px top-8px />
+        </i>
         重置
       </button>
 
-      <!-- 插槽 -->
+      <!-- 插槽  自定义操作 -->
       <slot name="operation" :multiSselects="multiSselects"> </slot>
     </div>
 
