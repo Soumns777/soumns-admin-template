@@ -47,13 +47,10 @@ watch(
 const removeTab = (activeTabPath: any) => {
   tabStore.removeTab(activeTabPath);
 };
-
-const layout = $ref('layout');
 </script>
 
 <template>
   <div min-h-screen>
-    <el-input v-model="layout"></el-input>
     <el-container>
       <el-aside width="200px" h="100%">
         <div

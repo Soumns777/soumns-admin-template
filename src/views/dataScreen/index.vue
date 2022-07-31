@@ -42,14 +42,10 @@ const getRef = () => {
 getRef();
 
 const show = $ref(true);
-
-const dataScreen = $ref('dataScreen');
 </script>
 
 <template>
   <div>
-    <el-input v-model="dataScreen"></el-input>
-
     <div class="box" w="100%" h="20px">数据大屏</div>
 
     <button

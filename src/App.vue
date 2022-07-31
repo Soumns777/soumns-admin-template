@@ -10,15 +10,15 @@ const config = reactive({
 <template>
   <div>
     <el-config-provider :locale="zhCn" :button="config">
-      <router-view v-slot="{ Component, route }">
+      <!-- <router-view v-slot="{ Component, route }">
         <transition name="fade-transform">
           <keep-alive :include="['layout', 'dataScreen']">
             <component :is="Component" :key="route.path" />
           </keep-alive>
         </transition>
-      </router-view>
+      </router-view> -->
 
-      <!-- <router-view></router-view> -->
+      <router-view></router-view>
     </el-config-provider>
   </div>
 </template>

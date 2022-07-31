@@ -4,8 +4,6 @@ import cacheRouter from '@/hooks/useCache';
 
 <template>
   <div class="container">
-    <!-- <el-input v-model="test">111</el-input> -->
-
     <router-view v-slot="{ Component, route }">
       <transition name="fade-transform">
         <keep-alive :include="cacheRouter">
