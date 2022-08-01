@@ -5,11 +5,11 @@ import cacheRouter from '@/hooks/useCache';
 <template>
   <div class="container">
     <router-view v-slot="{ Component, route }">
-      <transition name="fade-transform">
+      <Transition name="fade-transform" mode="out-in">
         <keep-alive :include="cacheRouter">
           <component :is="Component" :key="route.path" />
         </keep-alive>
-      </transition>
+      </Transition>
     </router-view>
   </div>
 </template>
