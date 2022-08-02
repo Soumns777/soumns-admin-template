@@ -31,9 +31,9 @@ export const routes: RouteRecordRaw[] = [
   {
     path: '/layout',
     name: 'layout',
-    // meta: {
-    //   keepAlive: true,
-    // },
+    meta: {
+      keepAlive: true,
+    },
     component: () => import('@/views/layout/index.vue'),
     redirect: HOME_URL,
   },

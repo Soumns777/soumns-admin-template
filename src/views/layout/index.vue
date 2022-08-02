@@ -1,7 +1,6 @@
 <script lang="ts" setup name="layout">
 import store from '@/store/index';
 import { ArrowRight } from '@element-plus/icons-vue';
-import { InjectionKey, Ref } from 'vue';
 import cacheRouter from '@/hooks/useCache';
 import {
   RouteLocationMatched,
@@ -9,7 +8,6 @@ import {
   RouteRecordName,
 } from 'vue-router';
 import { TabsPaneContext } from 'element-plus/lib/tokens/tabs';
-import { bgColorKey } from '@/types/provideKey';
 
 const authStore = store().Auth;
 const tabStore = store().Tabs;
@@ -134,13 +132,16 @@ const removeTab = (activeTabPath: any) => {
               >首页</el-breadcrumb-item
             >
 
-            <el-breadcrumb-item
-              v-for="item in breadcrumbList.filter(
-                (item) => item.meta.title !== '首页'
-              )"
-              :key="item.path"
-              :to="{ path: item.path }"
-              >{{ item.meta.title }}</el-breadcrumb-item
+            <!-- transition-group -->
+            <transition-group name="fade-transform">
+              <el-breadcrumb-item
+                v-for="item in breadcrumbList.filter(
+                  (item) => item.meta.title !== '首页'
+                )"
+                :key="item.path"
+                :to="{ path: item.path }"
+                >{{ item.meta.title }}</el-breadcrumb-item
+              ></transition-group
             >
           </el-breadcrumb>
 
