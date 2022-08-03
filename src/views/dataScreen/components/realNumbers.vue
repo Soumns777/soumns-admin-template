@@ -186,5 +186,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="echarts" id="RealTimeAccessChart" w="200px" h="100px"></div>
+  <div class="echarts" id="RealTimeAccessChart" w="287px" h="197px"></div>
 </template>
+
+<style lang="scss" scoped></style>
