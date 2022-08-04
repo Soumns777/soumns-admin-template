@@ -1,6 +1,14 @@
 <script lang="ts" setup name="realNumbers">
 import { ECharts, init } from 'echarts';
 import 'echarts-liquidfill';
+
+// set real numbers
+const numbers = $ref<number>(216908);
+const autoNumbers = computed<string[]>(() => {
+  return (numbers.toString() + '人').split('');
+});
+
+// init echarts
 const initRealNumbers = (data: number = 1): ECharts => {
   const charEle = document.getElementById('RealTimeAccessChart') as HTMLElement;
   const charEch: ECharts = init(charEle);
@@ -186,7 +194,70 @@ defineExpose({
 </script>
 
 <template>
-  <div class="echarts" id="RealTimeAccessChart" w="287px" h="197px"></div>
+  <!-- 实时人数统计 -->
+  <div
+    class="realNumbers"
+    relative
+    box-border
+    w="287px"
+    h="272px"
+    p="x20px y50px"
+  >
+    <div absolute top-1px left-0px flex flex-col box-border>
+      <span text-12px m="b6px" color="white" class="family">实时游客统计</span>
+      <img
+        src="@/assets/uploads/dataScreen-title.png"
+        w="68px"
+        h="7px"
+        alt=""
+      />
+    </div>
+    <!-- 实时人数统计 实际数量  -->
+    <div color="white" box-border relative h="50px" flex items-center>
+      <span
+        v-for="(item, idx) in autoNumbers"
+        :key="idx"
+        w="38px"
+        h="36px"
+        color="#66ffff"
+        bg-blue-500
+        text-26px
+        m="r1px"
+        flex
+        items-center
+        justify-center
+        class="real-bg"
+      >
+        {{ item }}</span
+      >
+    </div>
+
+    <!-- 实时人数统计 echarts  -->
+    <div
+      class="echarts"
+      m="t--16px l--40px "
+      id="RealTimeAccessChart"
+      w="287px"
+      h="197px"
+    ></div>
+  </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.realNumbers {
+  background: url('@/assets/uploads/dataScreen-main-lc.png') no-repeat;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  .family {
+    font-family: '优设标题黑';
+  }
+
+  .real-bg {
+    background: url('@/assets/uploads/total.png') no-repeat;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    font-family: 'MetroDF';
+  }
+}
+</style>
