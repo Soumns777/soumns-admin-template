@@ -1,7 +1,7 @@
 <script lang="ts" setup name="dataScreen">
 import RealNumbers from './components/realNumbers.vue';
 import ChinaMap from './components/chinaMap.vue';
-
+import MapUnder from './components/mapUnder.vue';
 // init real numbers
 interface IRealNumbersExpose {
   initRealNumbers: (data: number) => void;
@@ -89,8 +89,8 @@ onMounted(() => {
 <template>
   <div class="w-full h-screen dataScreen-container" box-border flex flex-col>
     <!-- 头部 -->
-    <div flex w="100%" h="38px" bg="#FFD4A9">
-      <div soumns-btn-green soumns-dfl soumns-kly>测试Unocss预设</div>
+    <div flex w="100%" h="38px" bg="#FFD4A9" soumns-dfl soumns-kly>
+      测试Unocss预设
     </div>
 
     <!-- 主体内容 -->
@@ -106,9 +106,12 @@ onMounted(() => {
 
       <!-- 中间 -->
       <div flex flex-col m="l40px" box-border>
-        <!-- 飞机航线图 -->
         <div w="706px" h="500px" m="t30px">
-          <ChinaMap ref="chinaMap" />
+          <!-- 飞机航线图 -->
+          <!-- <ChinaMap ref="chinaMap" /> -->
+
+          <!-- 地图下钻 -->
+          <MapUnder ref="mapUnder" />
         </div>
         <div w="706px" h="184px" m="t16px" bg="#FF770F">
           未来30天客流量趋势图

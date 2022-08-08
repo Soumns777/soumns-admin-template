@@ -11,8 +11,8 @@ import {
 
 export default defineConfig({
   theme: {
-    colors: {
-      nice: 'skyblue',
+    backgroundImage: {
+      'hero-man': "url('/src/assets/uploads/bg.png",
     },
   },
   rules: [
