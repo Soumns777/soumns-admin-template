@@ -87,11 +87,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full h-screen dataScreen-container" box-border flex flex-col>
+  <!-- dataScreen-container -->
+  <div soumns-min soumns-bg-bg-png flex flex-col>
     <!-- 头部 -->
-    <div flex w="100%" h="38px" bg="#FFD4A9" soumns-dfl soumns-kly>
-      测试Unocss预设
-    </div>
+    <div soumns-flex w="100%" h="38px" bg-dfl text-zgh>测试Unocss预设</div>
 
     <!-- 主体内容 -->
     <div flex box-border p="20px l40px">

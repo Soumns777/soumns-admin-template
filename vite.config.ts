@@ -14,6 +14,7 @@ export default defineConfig({
   base: './',
   publicDir: 'public',
   build: {
+    chunkSizeWarningLimit: 2000,
     target: 'modules',
     outDir: 'dist/www', //指定输出路径
     assetsDir: 'assets', // 指定生成静态资源的存放路径
